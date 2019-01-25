@@ -1,0 +1,41 @@
+<div class="container">
+  <br>
+  <h5>Start a search</h5>
+
+  <form [formGroup]="searchForm">
+
+  <div class="container">
+    <div class="row">
+      <div class="col">
+
+        <div class="input-group mb-3">
+          <div class="input-group-prepend">
+            <span class="input-group-text" id="inputGroup-sizing-default">Enter Airport Code</span>
+          </div>
+          <input type="text" formControlName="airport" class="form-control" aria-label="Airport" aria-describedby="inputGroup-sizing-default">
+        </div>
+
+      </div>
+
+      <div class="col">
+
+
+        <div class="input-group mb-3">
+          <div class="input-group-prepend">
+            <label class="input-group-text" for="inputGroupSelect01">Select Type</label>
+          </div>
+          <select class="custom-select" id="inputGroupSelect01">
+            <option selected>Choose...</option>
+            <option value="1">Any</option>
+            <option value="2">Runway</option>
+            <option value="3">Obstruction</option>
+          </select>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  </form>
+</div>
+
