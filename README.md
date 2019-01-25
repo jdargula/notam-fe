@@ -2,7 +2,7 @@
 
 TO SET UP AND RUN:
 
-1. Make sure you have NPM installed
+1. Make sure you have Node/NPM installed https://nodejs.org/en/
 
 2. Make sure you have the Angular CLI installed.
 
