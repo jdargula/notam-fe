@@ -2,15 +2,20 @@
 
 TO SET UP AND RUN:
 
-Make sure you have NPM installed
-Make sure you have the Angular CLI installed.
-Clone repo
-Go to top directory of the project and run "npm install"
-Start the Spring backend up and make sure its running on port 8080.
-Go to top directory of the project and run "ng serve"
-Go to http://localhost:4200
+1. Make sure you have NPM installed
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 7.2.1.
+2. Make sure you have the Angular CLI installed.
+
+3. Clone repo
+
+4. Go to top directory of the project and run "npm install"
+
+5. Start the Spring backend up and make sure its running on port 8080.
+
+6. Go to top directory of the project and run "ng serve"
+
+7. Go to http://localhost:4200
+
 
 ## Development server
 
