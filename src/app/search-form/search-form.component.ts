@@ -12,6 +12,7 @@ export class SearchFormComponent implements OnInit {
   constructor(private http: HttpClient) { }
 
   apiRoot = "http://localhost:8080" 
+  displayResponse: boolean = false
 
   searchForm = new FormGroup({
     airport: new FormControl(''),
@@ -23,6 +24,7 @@ export class SearchFormComponent implements OnInit {
        res => {
          console.log('res')
          console.log(JSON.stringify(res))
+         this.displayResponse = true;
        }, err => {
          console.error(err)
        }
