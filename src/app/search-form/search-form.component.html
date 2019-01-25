@@ -1,8 +1,7 @@
 <div class="container">
-  <br>
-  <h5>Start a search</h5>
+  <h5 class="padded-1">Start a search</h5>
 
-  <form [formGroup]="searchForm">
+  <form [formGroup]="searchForm" (ngSubmit)="submitSearch(searchForm)">
 
   <div class="container">
     <div class="row">
@@ -12,7 +11,7 @@
           <div class="input-group-prepend">
             <span class="input-group-text" id="inputGroup-sizing-default">Enter Airport Code</span>
           </div>
-          <input type="text" formControlName="airport" class="form-control" aria-label="Airport" aria-describedby="inputGroup-sizing-default">
+          <input type="text" formControlName="airport" class="form-control" aria-label="Airport" placeholder="XXX" aria-describedby="inputGroup-sizing-default">
         </div>
 
       </div>
@@ -34,6 +33,13 @@
 
       </div>
     </div>
+
+    <div class="row justify-content-center">
+      <div class="col-1">
+        <button type="button submit" class="btn btn-outline-primary col-centered">Submit</button>
+      </div>
+    </div>
+
   </div>
 
   </form>

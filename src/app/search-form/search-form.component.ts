@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl } from '@angular/forms';
+import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'app-search-form',
@@ -8,14 +9,26 @@ import { FormGroup, FormControl } from '@angular/forms';
 })
 export class SearchFormComponent implements OnInit {
 
-  constructor() { }
+  constructor(private http: HttpClient) { }
+
+  apiRoot = "http://localhost:8080" 
 
   searchForm = new FormGroup({
     airport: new FormControl(''),
     type: new FormControl('')
   })
 
-  ngOnInit() {
+  submitSearch() {
+     this.http.post(this.apiRoot + '/AirportCode', this.searchForm.value.airport).subscribe(
+       res => {
+         console.log('res')
+         console.log(JSON.stringify(res))
+       }, err => {
+         console.error(err)
+       }
+     )
   }
+
+  ngOnInit() {}
 
 }

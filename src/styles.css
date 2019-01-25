@@ -1,2 +1,27 @@
 /* You can add global styles to this file, and also import other style files */
 @import '~bootstrap/dist/css/bootstrap.min.css';
+
+.col-centered{
+    float: none;
+    margin: 0 auto;
+}
+
+.padded-1 {
+    padding: 1%
+}
+
+.padded-2 {
+    padding: 2%
+}
+
+.padded-light {
+    padding: 3%
+}
+
+.padded-med {
+    padding: 5%
+}
+
+.padded-heavy {
+    padding: 8%
+}
