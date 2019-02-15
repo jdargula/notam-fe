@@ -33,6 +33,21 @@ export class SearchFormComponent implements OnInit {
      )
   }
 
+  
+  testMoreDetails() {
+    this.moreDetails('11/330');
+  }
+
+  moreDetails(key: string) {
+    this.http.post(this.apiRoot + '/RawNotamFromKey', key, {responseType: 'text'}).subscribe(
+      res => {
+        console.log(res.toString())
+      }, err => {
+        console.error(err)
+      }
+    )
+  }
+
   ngOnInit() {}
 
 }
