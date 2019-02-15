@@ -6,6 +6,16 @@
     margin: 0 auto;
 }
 
+.padded-vert-1 {
+    padding-top: 1%;
+    padding-bottom: 1%
+}
+
+.padded-vert-2 {
+    padding-top: 1%;
+    padding-bottom: 1%
+}
+
 .padded-1 {
     padding: 1%
 }

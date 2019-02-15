@@ -1,9 +1,11 @@
 <div class="container">
+    <h2 class="padded-vert-1">NOTAM Finder</h2>
   <h5 class="padded-1">Start a search</h5>
 
   <form [formGroup]="searchForm" (ngSubmit)="submitSearch(searchForm)">
 
   <div class="container">
+    
     <div class="row">
       <div class="col">
 
@@ -46,7 +48,7 @@
 
 </div>
 
-<div *ngIf="displayResponse" class="container" >
+<div *ngIf="displayResponse" class="container-fluid" >
   <h3>Results</h3>
 
   <div class="row padding-1">
