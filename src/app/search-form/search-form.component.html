@@ -85,9 +85,8 @@
 
   </div>
 
-  <div class="row">
-
-    <div class="col-1">
+  <div class="row padded-1" *ngFor="let response of notams">
+    <div (click)="moreDetails(response.col1)" class="col-1 link">
       {{response.col1}}
     </div>
     <div class="col-1">

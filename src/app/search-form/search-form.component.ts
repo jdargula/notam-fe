@@ -14,6 +14,7 @@ export class SearchFormComponent implements OnInit {
   apiRoot = "http://localhost:8080" 
   displayResponse: boolean = false
   response;
+  notams;
 
   searchForm = new FormGroup({
     airport: new FormControl(''),
@@ -21,11 +22,11 @@ export class SearchFormComponent implements OnInit {
   })
 
   submitSearch() {
-     this.http.post(this.apiRoot + '/AirportCode', this.searchForm.value.airport).subscribe(
+     this.http.post(this.apiRoot + '/AirportCodeMultiple', this.searchForm.value.airport).subscribe(
        res => {
          console.log('res')
          console.log(JSON.stringify(res))
-         this.response = res;
+         this.notams = res;
          this.displayResponse = true;
        }, err => {
          console.error(err)
@@ -33,13 +34,26 @@ export class SearchFormComponent implements OnInit {
      )
   }
 
+  multipleSearch() {
+    this.http.post(this.apiRoot + '/AirportCodeMultiple', 'ATL').subscribe(
+      res => {
+        console.log('res')
+        console.log(JSON.stringify(res))
+        this.notams = res;
+        this.displayResponse = true;
+      }, err => {
+        console.error(err)
+      }
+    )
+  }
+
   
   testMoreDetails() {
-    this.moreDetails('11/330');
+    this.multipleSearch();
   }
 
   moreDetails(key: string) {
-    this.http.post(this.apiRoot + '/RawNotamFromKey', key, {responseType: 'text'}).subscribe(
+    this.http.post(this.apiRoot + '/RawNotamFromKey', key, { responseType: 'text'}).subscribe(
       res => {
         console.log(res.toString())
       }, err => {
@@ -47,6 +61,7 @@ export class SearchFormComponent implements OnInit {
       }
     )
   }
+
 
   ngOnInit() {}
 
