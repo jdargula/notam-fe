@@ -9,11 +9,13 @@ import { HttpClientModule } from '@angular/common/http';
 
 import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
 import {MdDialogModule} from '@angular/material';
+import { MoreInfoComponent } from './more-info/more-info.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     SearchFormComponent,
+    MoreInfoComponent,
   ],
   imports: [
     NgbModule,

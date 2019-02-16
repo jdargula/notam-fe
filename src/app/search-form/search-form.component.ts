@@ -13,6 +13,8 @@ export class SearchFormComponent implements OnInit {
 
   apiRoot = "http://localhost:8080" 
   displayResponse: boolean = false
+  displayMoreDetails:boolean = false;
+  rawNotam;
   response;
   notams;
 
@@ -56,10 +58,16 @@ export class SearchFormComponent implements OnInit {
     this.http.post(this.apiRoot + '/RawNotamFromKey', key, { responseType: 'text'}).subscribe(
       res => {
         console.log(res.toString())
+        this.rawNotam = res.toString();
+        this.displayMoreDetails = true;
       }, err => {
         console.error(err)
       }
     )
+  }
+
+  closeDetails() {
+    this.displayMoreDetails = false;
   }
 
 
