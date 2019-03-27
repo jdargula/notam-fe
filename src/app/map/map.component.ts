@@ -1,9 +1,10 @@
 /* tslint:disable:prefer-const */
 // map/map.component.ts
 
-import { Component, Input, ViewChild, NgZone, OnInit } from '@angular/core';
+import { Component, ViewChild, NgZone, OnInit } from '@angular/core';
 import { MapsAPILoader, AgmMap } from '@agm/core';
 import { GoogleMapsAPIWrapper } from '@agm/core/services';
+import {HttpClient} from '@angular/common/http';
 
 declare var google: any;
 
@@ -34,9 +35,17 @@ interface Location {
 })
 
 export class MapComponent implements OnInit {
+  private apiRoot: string;
+  private displayResponse: boolean;
+  private displayMoreDetails: boolean;
+  private notams: Object;
   constructor(public mapsApiLoader: MapsAPILoader,
               private zone: NgZone,
-              private wrapper: GoogleMapsAPIWrapper) {
+              private wrapper: GoogleMapsAPIWrapper,
+              private http: HttpClient) {
+    this.apiRoot = 'http://localhost:8080';
+    this.displayResponse = false;
+    this.displayMoreDetails = false;
     this.mapsApiLoader = mapsApiLoader;
     this.zone = zone;
     this.wrapper = wrapper;
@@ -46,11 +55,11 @@ export class MapComponent implements OnInit {
   }
   geocoder: any;
   public location: Location = {
-    lat: 51.678418,
-    lng: 7.809007,
+    lat: 0,
+    lng: 0,
     marker: {
-      lat: 51.678418,
-      lng: 7.809007,
+      lat: 0,
+      lng: 0,
       draggable: true
     },
     zoom: 5
@@ -59,6 +68,21 @@ export class MapComponent implements OnInit {
 
   ngOnInit() {
     this.location.marker.draggable = true;
+  }
+
+  showMap() {
+    this.http.post(this.apiRoot + '/LongandLatfromCoords', 'ATL').subscribe(
+      res => {
+        console.log('res');
+        console.log(JSON.stringify(res));
+        this.notams = res;
+        this.location.lat = this.notams[0];
+        this.location.lng = this.notams[1];
+        this.displayResponse = true;
+      }, err => {
+        console.error(err);
+      }
+    );
   }
 
   findLocation(address) {
@@ -101,7 +125,7 @@ export class MapComponent implements OnInit {
     });
   }
 
-  markerDragEnd(m: any, $event: any) {
+  notamLocationOnMap(m: any) {
     this.location.marker.lat = m.coords.lat;
     this.location.marker.lng = m.coords.lng;
     this.findAddressByCoordinates();
@@ -111,7 +135,7 @@ export class MapComponent implements OnInit {
     this.geocoder.geocode({
       'location': {
         lat: this.location.marker.lat,
-        lng: this.location.marker.lng
+        lng: this.location.marker.lng,
       }
     }, (results, status) => {
       this.decomposeAddressComponents(results);
@@ -147,16 +171,12 @@ export class MapComponent implements OnInit {
       }
       if (element['types'].indexOf('postal_code') > -1) {
         this.location.address_zip = element['long_name'];
-        continue;
+
       }
     }
   }
 
   updateOnMap() {
-    let full_address: string = this.location.address_level_1 || '';
-    if (this.location.address_level_2) { full_address = full_address + ' ' + this.location.address_level_2; }
-    if (this.location.address_state) { full_address = full_address + ' ' + this.location.address_state; }
-    if (this.location.address_country) { full_address = full_address + ' ' + this.location.address_country; }
-    this.findLocation(full_address);
+    this.notamLocationOnMap(this.location);
   }
 }

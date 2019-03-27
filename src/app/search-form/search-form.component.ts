@@ -11,9 +11,9 @@ export class SearchFormComponent implements OnInit {
 
   constructor(private http: HttpClient) { }
 
-  apiRoot = "http://localhost:8080" 
-  displayResponse: boolean = false
-  displayMoreDetails:boolean = false;
+  apiRoot = 'http://localhost:8080';
+  displayResponse = false;
+  displayMoreDetails = false;
   rawNotam;
   response;
   notams;
@@ -21,35 +21,35 @@ export class SearchFormComponent implements OnInit {
   searchForm = new FormGroup({
     airport: new FormControl(''),
     type: new FormControl('')
-  })
+  });
 
   submitSearch() {
      this.http.post(this.apiRoot + '/AirportCodeMultiple', this.searchForm.value.airport).subscribe(
        res => {
-         console.log('res')
-         console.log(JSON.stringify(res))
+         console.log('res');
+         console.log(JSON.stringify(res));
          this.notams = res;
          this.displayResponse = true;
        }, err => {
-         console.error(err)
+         console.error(err);
        }
-     )
+     );
   }
 
   multipleSearch() {
     this.http.post(this.apiRoot + '/AirportCodeMultiple', 'ATL').subscribe(
       res => {
-        console.log('res')
-        console.log(JSON.stringify(res))
+        console.log('res');
+        console.log(JSON.stringify(res));
         this.notams = res;
         this.displayResponse = true;
       }, err => {
-        console.error(err)
+        console.error(err);
       }
-    )
+    );
   }
 
-  
+
   testMoreDetails() {
     this.multipleSearch();
   }
@@ -57,13 +57,13 @@ export class SearchFormComponent implements OnInit {
   moreDetails(key: string) {
     this.http.post(this.apiRoot + '/RawNotamFromKey', key, { responseType: 'text'}).subscribe(
       res => {
-        console.log(res.toString())
+        console.log(res.toString());
         this.rawNotam = res.toString();
         this.displayMoreDetails = true;
       }, err => {
-        console.error(err)
+        console.error(err);
       }
-    )
+    );
   }
 
   closeDetails() {

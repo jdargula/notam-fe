@@ -2,7 +2,7 @@
     <h2 class="padded-vert-1">NOTAM Finder</h2>
   <h5 class="padded-1">Start a search</h5>
 
-  <form [formGroup]="searchForm" (ngSubmit)="submitSearch(searchForm)">
+  <form [formGroup]="searchForm" (ngSubmit)="submitSearch()">
 
   <div class="container">
     
@@ -13,7 +13,8 @@
           <div class="input-group-prepend">
             <span class="input-group-text" id="inputGroup-sizing-default">Enter Airport Code</span>
           </div>
-          <input type="text" formControlName="airport" class="form-control" aria-label="Airport" placeholder="XXX" aria-describedby="inputGroup-sizing-default">
+          <input type="text" formControlName="airport" class="form-control" aria-label="Airport"
+                 placeholder="IATA/ICAO" aria-describedby="inputGroup-sizing-default">
         </div>
 
       </div>
@@ -83,8 +84,11 @@
     <div class="col-3 table-header">
       Type
     </div>
-    <div class="col-2 table-header">
-      Coordinates
+    <div class="col-1 table-header">
+      Latitude
+    </div>
+    <div class="col-1 table-header">
+      Longitude
     </div>
     <div class="col-1 table-header">
       Altitude
@@ -131,6 +135,9 @@
     </div>
     <div class="col-1">
       {{response.col9}}
+    </div>
+    <div class="col-1">
+      {{response.col10}}
     </div>
 
   </div>
