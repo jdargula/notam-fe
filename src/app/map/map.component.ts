@@ -92,6 +92,7 @@ export class MapComponent implements OnInit {
     }, (results, status) => {
       console.log(results);
       if (status === google.maps.GeocoderStatus.OK) {
+        this.updateOnMap(this.location);
         for (let i = 0; i < results[0].address_components.length; i++) {
           let types = results[0].address_components[i].types;
 
@@ -176,7 +177,7 @@ export class MapComponent implements OnInit {
     }
   }
 
-  updateOnMap() {
-    this.notamLocationOnMap(this.location);
+  updateOnMap(location) {
+    this.notamLocationOnMap(location);
   }
 }
