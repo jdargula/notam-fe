@@ -5,6 +5,7 @@ import { Component, ViewChild, NgZone, OnInit } from '@angular/core';
 import { MapsAPILoader, AgmMap } from '@agm/core';
 import { GoogleMapsAPIWrapper } from '@agm/core/services';
 import {HttpClient} from '@angular/common/http';
+import {LatLng} from '@agm/core';
 
 declare var google: any;
 
@@ -39,6 +40,8 @@ export class MapComponent implements OnInit {
   private displayResponse: boolean;
   private displayMoreDetails: boolean;
   private notams: Object;
+  private myLatLng: LatLng;
+
   constructor(public mapsApiLoader: MapsAPILoader,
               private zone: NgZone,
               private wrapper: GoogleMapsAPIWrapper,
@@ -70,8 +73,13 @@ export class MapComponent implements OnInit {
     this.location.marker.draggable = true;
   }
 
+  ngOnChange() {
+    this.location.marker.draggable = true;
+  }
+
   showMap() {
-    this.http.post(this.apiRoot + '/LongandLatfromCoords', 'ATL').subscribe(
+
+    this.http.post(this.apiRoot + '/LongandLatfromCoords', this.myLatLng).subscribe(
       res => {
         console.log('res');
         console.log(JSON.stringify(res));
@@ -79,54 +87,39 @@ export class MapComponent implements OnInit {
         this.location.lat = this.notams[0];
         this.location.lng = this.notams[1];
         this.displayResponse = true;
+        this.myLatLng = new google.maps.LatLng({lat: res[0], lng: res[1]});
+        this.findLocation(this.myLatLng);
+        this.ngOnChange();
       }, err => {
         console.error(err);
       }
     );
   }
 
-  findLocation(address) {
+  findLocation(myLatLng) {
     if (!this.geocoder) { this.geocoder = new google.maps.Geocoder(); }
     this.geocoder.geocode({
-      'address': address
-    }, (results, status) => {
-      console.log(results);
+      'myLatLng': myLatLng
+    }, (res, status) => {
+      console.log(res);
       if (status === google.maps.GeocoderStatus.OK) {
-        this.updateOnMap(this.location);
-        for (let i = 0; i < results[0].address_components.length; i++) {
-          let types = results[0].address_components[i].types;
-
-          if (types.indexOf('locality') !== -1) {
-            this.location.address_level_2 = results[0].address_components[i].long_name;
-          }
-          if (types.indexOf('country') !== -1) {
-            this.location.address_country = results[0].address_components[i].long_name;
-          }
-          if (types.indexOf('postal_code') !== -1) {
-            this.location.address_zip = results[0].address_components[i].long_name;
-          }
-          if (types.indexOf('administrative_area_level_1') !== -1) {
-            this.location.address_state = results[0].address_components[i].long_name;
-          }
-        }
-
-        if (results[0].geometry.location) {
-          this.location.lat = results[0].geometry.location.lat();
-          this.location.lng = results[0].geometry.location.lng();
-          this.location.marker.lat = results[0].geometry.location.lat();
-          this.location.marker.lng = results[0].geometry.location.lng();
+        this.updateOnMap(this.myLatLng);
+        this.map.triggerResize(true);
+        if (res[0].geometry.location) {
+          this.location.lat = res[0].geometry.location.lat();
+          this.location.lng = res[0].geometry.location.lng();
+          this.location.marker.lat = res[0].geometry.location.lat();
+          this.location.marker.lng = res[0].geometry.location.lng();
           this.location.marker.draggable = true;
-          this.location.viewport = results[0].geometry.viewport;
+          this.location.viewport = res[0].geometry.viewport;
         }
-
-        this.map.triggerResize();
       } else {
         alert('Sorry, this search produced no results.');
       }
     });
   }
 
-  notamLocationOnMap(m: any) {
+  markerDragEnd(m: any, $event: any) {
     this.location.marker.lat = m.coords.lat;
     this.location.marker.lng = m.coords.lng;
     this.findAddressByCoordinates();
@@ -139,7 +132,9 @@ export class MapComponent implements OnInit {
         lng: this.location.marker.lng,
       }
     }, (results, status) => {
-      this.decomposeAddressComponents(results);
+      if (status === google.maps.GeocoderStatus.OK) {
+        this.decomposeAddressComponents(results);
+      }
     });
   }
 
@@ -178,6 +173,6 @@ export class MapComponent implements OnInit {
   }
 
   updateOnMap(location) {
-    this.notamLocationOnMap(location);
+    this.markerDragEnd(location, this.showMap());
   }
 }
