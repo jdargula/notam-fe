@@ -4,8 +4,9 @@
 
   <form [formGroup]="searchForm" (ngSubmit)="submitSearch()">
 
-  <div class="container">
-    
+
+    <div class="container">
+
     <div class="row">
       <div class="col">
 
@@ -56,21 +57,21 @@
       {{rawNotam}}
   </div>
 
-  
+
   <div class="row justify-content-center">
       <div class="col-1">
           <button (click)="closeDetails()" class="btn btn-outline-primary col-centered">Close</button>
       </div>
     </div>
 
- 
-  
+
+
 
 </div>
 </div>
 
 <div *ngIf="displayResponse && !displayMoreDetails" class="container-fluid" >
-  
+
   <h3>Results</h3>
 
   <div class="row padding-1">

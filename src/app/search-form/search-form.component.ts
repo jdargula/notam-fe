@@ -1,27 +1,34 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import { FormGroup, FormControl } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
+import { MapComponent } from '../map/map.component';
 
 @Component({
   selector: 'app-search-form',
   templateUrl: './search-form.component.html',
   styleUrls: ['./search-form.component.css']
 })
+
 export class SearchFormComponent implements OnInit {
 
-  constructor(private http: HttpClient) { }
-
-  apiRoot = 'http://localhost:8080';
-  displayResponse = false;
-  displayMoreDetails = false;
-  rawNotam;
-  response;
-  notams;
-
+  private apiRoot: string;
+  private displayResponse: boolean;
+  private displayMoreDetails: boolean;
+  private rawNotam: Object;
+  private notams: Object;
+  map: MapComponent;
   searchForm = new FormGroup({
     airport: new FormControl(''),
     type: new FormControl('')
   });
+  constructor(private http: HttpClient) {
+    this.apiRoot = 'http://localhost:8080';
+    this.displayResponse = false;
+    this.displayMoreDetails = false;
+  }
+
+  ngOnInit() {
+  }
 
   submitSearch() {
      this.http.post(this.apiRoot + '/AirportCodeMultiple', this.searchForm.value.airport).subscribe(
@@ -30,6 +37,7 @@ export class SearchFormComponent implements OnInit {
          console.log(JSON.stringify(res));
          this.notams = res;
          this.displayResponse = true;
+         this.map.showMap();
        }, err => {
          console.error(err);
        }
@@ -48,7 +56,6 @@ export class SearchFormComponent implements OnInit {
       }
     );
   }
-
 
   testMoreDetails() {
     this.multipleSearch();
@@ -69,8 +76,4 @@ export class SearchFormComponent implements OnInit {
   closeDetails() {
     this.displayMoreDetails = false;
   }
-
-
-  ngOnInit() {}
-
 }

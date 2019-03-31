@@ -1,10 +1,9 @@
 <!-- map/map.component.html -->
 
-
-<div class="container-fluid" >
-  <agm-map [(latitude)]="location.lat" [(longitude)]="location.lng" [(zoom)]="location.zoom" [disableDefaultUI]="true"
-           [zoomControl]="true" [(fitBounds)]='location.viewport'>
-    <agm-marker [(latitude)]="location.marker.lat" [(longitude)]="location.marker.lng"
-                [markerDraggable]="true" (dragEnd)='showMap()'></agm-marker>
+<div class="container-fluid">
+  {{notams}}
+  <agm-map [(latitude)]= "notams[0]" [(longitude)]="notams[1]" [(zoom)]="location.zoom" [disableDefaultUI]="true" [zoomControl]="true" [(fitBounds)]='location.viewport'>
+    <agm-marker [(latitude)]="notams[0]" [(longitude)]="notams[1]" [markerDraggable]="location.marker.draggable" (dragEnd)='markerDragEnd($event)'></agm-marker>
   </agm-map>
+
 </div>
