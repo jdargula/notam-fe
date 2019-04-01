@@ -43,6 +43,7 @@ export class MapComponent implements OnInit {
   private displayMoreDetails: boolean;
   private notams: Object;
   searchForm: SearchFormComponent;
+  private airportCode: string;
   geocoder: any;
   public location: Location = {
     // default coordinates
@@ -56,7 +57,7 @@ export class MapComponent implements OnInit {
     },
     zoom: 5
   };
-  private myLatLng: LatLng;
+  myLatLng: LatLng;
   constructor(public mapsApiLoader: MapsAPILoader,
               private zone: NgZone,
               private wrapper: GoogleMapsAPIWrapper,
@@ -74,28 +75,21 @@ export class MapComponent implements OnInit {
   @ViewChild(AgmMap) map: AgmMap;
 
   ngOnInit() {
-    this.location.marker.draggable = true;
-    this.showMap();
   }
 
-  markerDragEnd($event: any) {
-    this.location.marker.lat = this.location.lat;
-    this.location.marker.lng = this.location.lng;
-    this.location.lat = this.location.marker.lat;
-    this.location.lng = this.location.marker.lng;
-  }
-
-  showMap() {
-    this.http.post(this.apiRoot + '/LongandLatfromCoords', 'ATL').subscribe(
+  showMap(airportCode) {
+    this.airportCode = airportCode;
+    this.http.post(this.apiRoot + '/LongandLatfromCoords', this.airportCode).subscribe(
       res => {
         console.log('res');
         console.log(JSON.stringify(res));
         this.notams = res;
-        this.displayResponse = true;
         this.location.lat = this.notams[0];
         this.location.lng = this.notams[1];
+        this.myLatLng = new google.maps.LatLng({lat: this.location.lat, lng: this.location.lng});
         this.location.marker.lat = this.location.lat;
         this.location.marker.lng = this.location.lng;
+        this.displayResponse = true;
       }, err => {
         console.error(err);
       }

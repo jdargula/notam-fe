@@ -37,7 +37,7 @@ export class SearchFormComponent implements OnInit {
          console.log(JSON.stringify(res));
          this.notams = res;
          this.displayResponse = true;
-         this.map.showMap();
+         this.map.showMap(this.searchForm.value.airport);
        }, err => {
          console.error(err);
        }
