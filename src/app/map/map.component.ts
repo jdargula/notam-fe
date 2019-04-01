@@ -42,7 +42,6 @@ export class MapComponent implements OnInit {
   private displayResponse: boolean;
   private displayMoreDetails: boolean;
   private notams: Object;
-  searchForm: SearchFormComponent;
   private airportCode: string;
   geocoder: any;
   public location: Location = {
@@ -83,9 +82,8 @@ export class MapComponent implements OnInit {
       res => {
         console.log('res');
         console.log(JSON.stringify(res));
-        this.notams = res;
-        this.location.lat = this.notams[0];
-        this.location.lng = this.notams[1];
+        this.location.lat = res[0];
+        this.location.lng = res[1];
         this.myLatLng = new google.maps.LatLng({lat: this.location.lat, lng: this.location.lng});
         this.location.marker.lat = this.location.lat;
         this.location.marker.lng = this.location.lng;

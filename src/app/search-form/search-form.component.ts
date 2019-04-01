@@ -16,12 +16,13 @@ export class SearchFormComponent implements OnInit {
   private displayMoreDetails: boolean;
   private rawNotam: Object;
   private notams: Object;
-  map: MapComponent;
+  private AIRPORT: string
   searchForm = new FormGroup({
     airport: new FormControl(''),
     type: new FormControl('')
   });
-  constructor(private http: HttpClient) {
+  constructor(private http: HttpClient,
+              private map: MapComponent) {
     this.apiRoot = 'http://localhost:8080';
     this.displayResponse = false;
     this.displayMoreDetails = false;
@@ -31,13 +32,14 @@ export class SearchFormComponent implements OnInit {
   }
 
   submitSearch() {
-     this.http.post(this.apiRoot + '/AirportCodeMultiple', this.searchForm.value.airport).subscribe(
+     this.AIRPORT = this.searchForm.value.airport;
+     this.http.post(this.apiRoot + '/AirportCodeMultiple', this['AIRPORT']).subscribe(
        res => {
          console.log('res');
          console.log(JSON.stringify(res));
          this.notams = res;
          this.displayResponse = true;
-         this.map.showMap(this.searchForm.value.airport);
+         this.map.showMap(this.AIRPORT);
        }, err => {
          console.error(err);
        }
@@ -45,7 +47,8 @@ export class SearchFormComponent implements OnInit {
   }
 
   multipleSearch() {
-    this.http.post(this.apiRoot + '/AirportCodeMultiple', 'ATL').subscribe(
+    this.AIRPORT = this.searchForm.value.airport;
+    this.http.post(this.apiRoot + '/AirportCodeMultiple', this['AIRPORT']).subscribe(
       res => {
         console.log('res');
         console.log(JSON.stringify(res));

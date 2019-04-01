@@ -10,6 +10,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { NgbModule} from '@ng-bootstrap/ng-bootstrap';
 import { MoreInfoComponent } from './more-info/more-info.component';
 import { AgmCoreModule, GoogleMapsAPIWrapper } from '@agm/core';
+import { MatListModule } from '@angular/material';
 import { MapComponent } from './map/map.component';
 
 @NgModule({
@@ -22,11 +23,12 @@ import { MapComponent } from './map/map.component';
   imports: [
     NgbModule,
     BrowserModule,
-    AgmCoreModule.forRoot({apiKey: 'AIzaSyDGapNAE5nKEqgzjy3zjzxqRIZRYNPYRlE'}), // <---
+    AgmCoreModule.forRoot({apiKey: 'AIzaSyDGapNAE5nKEqgzjy3zjzxqRIZRYNPYRlE'}),
     HttpClientModule,
     AppRoutingModule,
     FormsModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    MatListModule
   ],
   providers: [
     GoogleMapsAPIWrapper // <---
