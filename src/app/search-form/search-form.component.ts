@@ -1,7 +1,6 @@
-import {Component, OnInit} from '@angular/core';
 import { FormGroup, FormControl } from '@angular/forms';
+import {Component, OnInit} from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { MapComponent } from '../map/map.component';
 
 @Component({
   selector: 'app-search-form',
@@ -16,13 +15,11 @@ export class SearchFormComponent implements OnInit {
   private displayMoreDetails: boolean;
   private rawNotam: Object;
   private notams: Object;
-  private AIRPORT: string
   searchForm = new FormGroup({
     airport: new FormControl(''),
     type: new FormControl('')
   });
-  constructor(private http: HttpClient,
-              private map: MapComponent) {
+  constructor(private http: HttpClient) {
     this.apiRoot = 'http://localhost:8080';
     this.displayResponse = false;
     this.displayMoreDetails = false;
@@ -32,14 +29,12 @@ export class SearchFormComponent implements OnInit {
   }
 
   submitSearch() {
-     this.AIRPORT = this.searchForm.value.airport;
-     this.http.post(this.apiRoot + '/AirportCodeMultiple', this['AIRPORT']).subscribe(
+     this.http.post(this.apiRoot + '/AirportCodeMultiple', this.searchForm.value.airport).subscribe(
        res => {
          console.log('res');
          console.log(JSON.stringify(res));
          this.notams = res;
          this.displayResponse = true;
-         this.map.showMap(this.AIRPORT);
        }, err => {
          console.error(err);
        }
@@ -47,8 +42,7 @@ export class SearchFormComponent implements OnInit {
   }
 
   multipleSearch() {
-    this.AIRPORT = this.searchForm.value.airport;
-    this.http.post(this.apiRoot + '/AirportCodeMultiple', this['AIRPORT']).subscribe(
+    this.http.post(this.apiRoot + '/AirportCodeMultiple', this.searchForm.value.airport).subscribe(
       res => {
         console.log('res');
         console.log(JSON.stringify(res));

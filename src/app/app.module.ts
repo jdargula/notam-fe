@@ -11,19 +11,21 @@ import { NgbModule} from '@ng-bootstrap/ng-bootstrap';
 import { MoreInfoComponent } from './more-info/more-info.component';
 import { AgmCoreModule, GoogleMapsAPIWrapper } from '@agm/core';
 import { MatListModule } from '@angular/material';
-import { MapComponent } from './map/map.component';
+import { AgmMapComponent } from './agm-map/agm-map.component';
+import {AgmMarkerComponent} from './agm-marker/agm-marker.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     SearchFormComponent,
     MoreInfoComponent,
-    MapComponent,
+    AgmMapComponent,
+    AgmMarkerComponent
   ],
   imports: [
     NgbModule,
     BrowserModule,
-    AgmCoreModule.forRoot({apiKey: 'AIzaSyDGapNAE5nKEqgzjy3zjzxqRIZRYNPYRlE'}),
+    AgmCoreModule.forRoot({apiKey: 'AIzaSyBksgsMa4KIvu7CCytKzmJ6wuKya7Gdnw0'}),
     HttpClientModule,
     AppRoutingModule,
     FormsModule,
@@ -31,8 +33,7 @@ import { MapComponent } from './map/map.component';
     MatListModule
   ],
   providers: [
-    GoogleMapsAPIWrapper // <---
-  ],
+    GoogleMapsAPIWrapper],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
