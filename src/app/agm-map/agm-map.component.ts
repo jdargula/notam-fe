@@ -22,13 +22,12 @@ declare var google: any;
 })
 
 export class AgmMapComponent implements OnInit {
-  private coords: any;
   private apiRoot: string;
   private displayResponse: boolean;
   private displayMoreDetails: boolean;
-  private notamCoordinates: Object;
   private marker: AgmMarker;
   private airportLatLng: LatLng;
+  private testRes: Object;
   constructor(private zone: NgZone,
               private wrapper: GoogleMapsAPIWrapper,
               private http: HttpClient,
@@ -42,7 +41,6 @@ export class AgmMapComponent implements OnInit {
   @ViewChild(AgmMap) map: AgmMap;
 
   ngOnInit() {
-    this.getAirportCoordinates();
   }
 
   getAirportCoordinates() {
@@ -50,12 +48,6 @@ export class AgmMapComponent implements OnInit {
       res => {
         console.log(res);
         this.displayResponse = true;
-        /*this.coords = [];
-        this.notamCoordinates = JSON.parse('res', (key, value) => {
-          console.log(key);
-          this.coords = value;
-          return this.coords;
-        });*/
         this.airportLatLng = new google.maps.LatLng(JSON.stringify(res));
         this.marker = new google.maps.Marker({position: {lat: this.airportLatLng.lat(), lng: this.airportLatLng.lng()}, map: this.map});
         this.displayResponse = true;
@@ -64,4 +56,11 @@ export class AgmMapComponent implements OnInit {
       }
     );
   }
+  // Code below is to test "google not defined error" before backend coords data in db is updated to JSON format.
+  // Debug in browser for error with rest api call intact.
+    /*this.testRes = {lat: 33.3333, lng: -84.4444};
+    this.airportLatLng = new google.maps.LatLng(JSON.stringify(this.testRes));
+    this.marker = new google.maps.Marker({position: {lat: this.airportLatLng.lat(), lng: this.airportLatLng.lng()}, map: this.map});
+    this.displayResponse = true;
+  }*/
 }
