@@ -1,19 +1,30 @@
-<!-- agm-map/agm-agm-map.component.html -->
-<html>
-<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAyNmjOMAWgSHCP7XYTUUrwSi0so7IeKgQ&callback=getAirportCoordinates"
-        async defer>
-</script>
-  <div id="map"></div>
-    <form [formGroup]="searchForm.searchForm" (ngSubmit)="getAirportCoordinates()">
-      {{airportLatLng}}
-      <div class="row justify-content-center">
-        <div class="col-1">
-          <div id ="nav">
-            <button (click)="getAirportCoordinates()" class="btn btn-outline-primary col-centered">Get Map</button>
-          </div>
-          <div id = "aside"  style="padding:5px">
-          </div>
-        </div>
-      </div>
-    </form>
-</html>
+<div class="container-fluid">
+
+<agm-map id="map"
+  [latitude]="latitude"
+  [longitude]="longitude"
+  [disableDefaultUI]="false"
+  [zoomControl]="false">
+
+  <agm-marker
+    [latitude]="latitude"
+    [longitude]="longitude">
+
+    <agm-info-window>
+      <strong>InfoWindow content</strong>
+    </agm-info-window>
+
+  </agm-marker>
+
+  <agm-circle [latitude]="latitude" [longitude]="longitude"
+              [radius]="5000"
+              [fillColor]="'red'"
+              [circleDraggable]="true"
+              [editable]="true">
+  </agm-circle>
+
+</agm-map>
+  <form [formGroup]="searchForm.searchForm" (ngSubmit)="searchForm.submitSearch()">
+    <div id="search_button" (click)="setAirportCoordinates()" ></div>
+  </form>
+</div>
