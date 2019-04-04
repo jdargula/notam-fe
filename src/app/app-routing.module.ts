@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
+import {MatCommonModule} from '@angular/material';
 
 const routes: Routes = [];
 

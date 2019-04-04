@@ -10,7 +10,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { NgbModule} from '@ng-bootstrap/ng-bootstrap';
 import { MoreInfoComponent } from './more-info/more-info.component';
 import { AgmCoreModule, GoogleMapsAPIWrapper } from '@agm/core';
-import { MatListModule } from '@angular/material';
+import {MatCommonModule, MatListModule} from '@angular/material';
 import { AgmMapComponent } from './agm-map/agm-map.component';
 import {AgmMarkerComponent} from './agm-marker/agm-marker.component';
 
@@ -23,6 +23,7 @@ import {AgmMarkerComponent} from './agm-marker/agm-marker.component';
     AgmMarkerComponent
   ],
   imports: [
+    MatCommonModule,
     NgbModule,
     BrowserModule,
     AgmCoreModule.forRoot({apiKey: 'AIzaSyBksgsMa4KIvu7CCytKzmJ6wuKya7Gdnw0'}),

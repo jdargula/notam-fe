@@ -1,5 +1,8 @@
 <!-- agm-map/agm-agm-map.component.html -->
 <html>
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAyNmjOMAWgSHCP7XYTUUrwSi0so7IeKgQ&callback=getAirportCoordinates"
+        async defer>
+</script>
   <div id="map"></div>
     <form [formGroup]="searchForm.searchForm" (ngSubmit)="getAirportCoordinates()">
       {{airportLatLng}}
