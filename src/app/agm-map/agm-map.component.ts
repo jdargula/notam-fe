@@ -98,12 +98,15 @@ export class AgmMapComponent implements OnInit {
       this.m = JSON.parse(JSON.stringify(this.testRes));
       console.log('line 100: agm-map.component.ts: this.m = ' + JSON.stringify(this.airportLatLng));
       // ***Note***
-      // We want the coordinate data passed into this method pre-formatted to accommodate the
-      // JS-Object-to-JSON-string-serialization method "stringify":
-      // like this. Don't worry about spaces, just make sure chars are the same------------>>>>> { lat: 33.3333, lng: 84.4444 };
-      let j = JSON.stringify(this.testRes); // = "{"lat": 33.3333, "lng": -84.4444}" <<<< like this
+      // One major thing we need to get done: We want the
+      // coordinate data passed into this method
+      // pre-formatted to accommodate the JS-Object-to-JS
+      // ON-string-serialization method "stringify":
+      // (Don't worry about spaces, just make sure chars are the same and in the same order ------------>>>>>
+      // { lat: 33.3333, lng: 84.4444 }"
+      const j = JSON.stringify(this.testRes); // = "{"lat": 33.3333, "lng": -84.4444}" <<<< like this
       console.log('line 103: agm-map.component.ts: j = ' + j + ' ,and should = "{ "lat": 33.3333, "lng": 84.4444 }"');
-      let k = JSON.parse(j); // = Object { lat: 33.3333, lng: -84.4444 }; <<<< So we just parse it with JSON.parse,
+      const k = JSON.parse(j); // = Object { lat: 33.3333, lng: -84.4444 }; <<<< So we just parse it with JSON.parse,
       console.log('line 105: agm-map.component.ts: k = ' + k + ' ,and should = {object, Object] === Object { lat: 33.3333, lng: 84.4444 }');
       console.log('line 105: agm-map.component.ts: k.lat = ' + k.lat + ' ,and should = 33.3333');
       console.log('line 105: agm-map.component.ts: k.lng = ' + k.lng + ' ,and should = 84.4444');
