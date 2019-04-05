@@ -1,6 +1,6 @@
 <div class="container-fluid">
 
-<agm-map id="map"
+<agm-map id="map" id="search_button" (show)="setAirportCoordinates({lat: latitude, lng: longitude})"
   [latitude]="latitude"
   [longitude]="longitude"
   [disableDefaultUI]="false"
@@ -19,12 +19,25 @@
   <agm-circle [latitude]="latitude" [longitude]="longitude"
               [radius]="5000"
               [fillColor]="'red'"
-              [circleDraggable]="true"
-              [editable]="true">
+              [circleDraggable]="false"
+              [editable]="false">
   </agm-circle>
 
 </agm-map>
-  <form [formGroup]="searchForm.searchForm" (ngSubmit)="searchForm.submitSearch()">
-    <div id="search_button" (click)="setAirportCoordinates()" ></div>
-  </form>
 </div>
+  <form [formGroup]="searchForm.searchForm" (ngSubmit)="setAirportCoordinates()">
+
+    <div class="container">
+      <div class="row justify-content-center">
+        <div class="col-1">
+          <div id ="nav">
+            <button (click)="setAirportCoordinates()" class="btn btn-outline-primary col-centered">Get Map</button>
+          </div>
+          <div id = "aside"  style="padding:5px">
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+  </form>
