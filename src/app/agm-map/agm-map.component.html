@@ -1,6 +1,6 @@
 <div class="container-fluid">
 
-<agm-map id="map" id="search_button" (show)="setAirportCoordinates({lat: latitude, lng: longitude})"
+<agm-map id="map"
   [latitude]="latitude"
   [longitude]="longitude"
   [disableDefaultUI]="false"
@@ -11,7 +11,9 @@
     [longitude]="longitude">
 
     <agm-info-window>
-      <strong>InfoWindow content</strong>
+      <strong>
+        ( Latitude = {{latitude}}, Longitude = {{longitude}} )
+      </strong>
     </agm-info-window>
 
   </agm-marker>
@@ -29,12 +31,11 @@
 
     <div class="container">
       <div class="row justify-content-center">
-        <div class="col-1">
           <div id ="nav">
-            <button (click)="setAirportCoordinates()" class="btn btn-outline-primary col-centered">Get Map</button>
-          </div>
-          <div id = "aside"  style="padding:5px">
-          </div>
+            <button
+              (click)="setAirportCoordinates(); searchForm.submitSearch()"
+                    class="btn btn-outline-primary col-centered">Submit Button
+            </button>
 
         </div>
       </div>

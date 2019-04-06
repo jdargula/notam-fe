@@ -41,23 +41,6 @@ export class SearchFormComponent implements OnInit {
      );
   }
 
-  multipleSearch() {
-    this.http.post(this.apiRoot + '/AirportCodeMultiple', this.searchForm.value.airport).subscribe(
-      res => {
-        console.log('res');
-        console.log(JSON.stringify(res));
-        this.notams = res;
-        this.displayResponse = true;
-      }, err => {
-        console.error(err);
-      }
-    );
-  }
-
-  testMoreDetails() {
-    this.multipleSearch();
-  }
-
   moreDetails(key: string) {
     this.http.post(this.apiRoot + '/RawNotamFromKey', key, { responseType: 'text'}).subscribe(
       res => {
