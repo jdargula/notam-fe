@@ -1,6 +1,7 @@
 import { FormGroup, FormControl } from '@angular/forms';
 import {Component, OnInit} from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import {StringFormatDefinition} from 'ajv';
 
 @Component({
   selector: 'app-search-form',
@@ -29,6 +30,12 @@ export class SearchFormComponent implements OnInit {
   }
 
   submitSearch() {
+     if (this.searchForm.value.airport.length === 3) {
+       this.searchForm.value.airport = '!'
+         + this.searchForm.value.airport[0]
+         + this.searchForm.value.airport[1]
+         + this.searchForm.value.airport[2];
+     }
      this.http.post(this.apiRoot + '/AirportCodeMultiple', this.searchForm.value.airport).subscribe(
        res => {
          console.log('res');
