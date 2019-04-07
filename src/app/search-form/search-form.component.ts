@@ -1,7 +1,6 @@
 import { FormGroup, FormControl } from '@angular/forms';
 import {Component, OnInit} from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import {StringFormatDefinition} from 'ajv';
 
 @Component({
   selector: 'app-search-form',
@@ -27,6 +26,16 @@ export class SearchFormComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.http.post(this.apiRoot + '/AirportCodeALL', 'IATA/ICAO').subscribe(
+      res => {
+        console.log('res');
+        console.log(JSON.stringify(res));
+        this.notams = res;
+        this.displayResponse = true;
+      }, err => {
+        console.error(err);
+      }
+    );
   }
 
   submitSearch() {

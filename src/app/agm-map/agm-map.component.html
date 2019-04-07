@@ -3,8 +3,9 @@
 <agm-map id="map"
   [latitude]="latitude"
   [longitude]="longitude"
-  [disableDefaultUI]="false"
-  [zoomControl]="false">
+  [disableDefaultUI]="true"
+  [zoomControl]="true"
+  [zoom] = "zoom" >
 
   <agm-marker
     [latitude]="latitude"
@@ -12,6 +13,10 @@
 
     <agm-info-window>
       <strong>
+        <div class="row justify-content-center">
+        {{searchForm}}
+        </div>
+        <br>
         ( Latitude = {{latitude}}, Longitude = {{longitude}} )
       </strong>
     </agm-info-window>
@@ -19,8 +24,8 @@
   </agm-marker>
 
   <agm-circle [latitude]="latitude" [longitude]="longitude"
-              [radius]="5000"
-              [fillColor]="'red'"
+              [radius]="radius"
+              [fillColor]="color"
               [circleDraggable]="false"
               [editable]="false">
   </agm-circle>

@@ -1,12 +1,13 @@
 import {Component, NgModule, NgZone, OnInit} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import { ViewChild } from '@angular/core';
-import {AgmMap, LatLng, MapsAPILoader} from '@agm/core';
+import {AgmFitBounds, AgmMap, FitBoundsDetails, LatLng, LatLngBounds, LatLngBoundsLiteral, LatLngLiteral, MapsAPILoader} from '@agm/core';
 import { GoogleMapsAPIWrapper } from '@agm/core/services';
 import {AgmMarker} from '@agm/core';
 import {AgmCoreModule} from '@agm/core';
 import {SearchFormComponent} from '../search-form/search-form.component';
 import {GoogleMap, MapOptions} from '@agm/core/services/google-maps-types';
+import {FitBoundsService} from '@agm/core/services/fit-bounds';
 
 declare var google: any;
 
@@ -31,9 +32,25 @@ export class AgmMapComponent implements OnInit {
   private latitude: number;
   private longitude: number;
   private zoom: number;
+  private radius: number;
+  private color: string;
   private m: any;
   private airportLatLng: LatLng;
-  private mapProp: MapOptions;
+  private latLngBounds: LatLngBounds;
+  private readonly top_DEFAULT: 24.7433195; // north lat
+  private readonly bottom_DEFAULT: 49.3457868; // south lat
+  private readonly left_DEFAULT: -124.7844079; // west long
+  private readonly right_DEFAULT: -66.9513812; // east long
+  latLngBounds_DEFAULT: LatLngBoundsLiteral = {
+    north: this.top_DEFAULT,
+    south: this.bottom_DEFAULT,
+    west: this.left_DEFAULT,
+    east: this.right_DEFAULT
+  };
+  private bottom: number;
+  private left: number;
+  private top: number;
+  private right: number;
   constructor(private API_Loader: MapsAPILoader,
               private zone: NgZone,
               private wrapper: GoogleMapsAPIWrapper,
@@ -41,9 +58,19 @@ export class AgmMapComponent implements OnInit {
               private searchForm: SearchFormComponent) {
     this.apiRoot = 'http://localhost:8080';
     this.zone = zone;
-    this.wrapper = wrapper;
     this.displayResponse = false;
-    this.testRes = {lat: 0, lng: 0}; // <<<<<<<<<---------we need coords in this format
+    this.zoom = 0;
+    this.testRes = {lat: 26.3729, lng: -80.1062}; // <<<<<<<<<---------we need coords in this format
+    this.color = 'red';
+    this.radius = 5000;
+    this.wrapper = wrapper;
+    // LatLngBounds([sw, ne])
+    // continental us
+    /*this.bottom = 49.3457868; // south lat
+    this.left = -124.7844079; // west long
+    this.top =  24.7433195; // north lat
+    this.right = -66.9513812; // east long*/
+    // this.latLngBounds = this.latLngBounds_DEFAULT;
     this.m = JSON.parse(JSON.stringify(this.testRes));
     //
     // ***Note***
@@ -58,7 +85,6 @@ export class AgmMapComponent implements OnInit {
   @ViewChild(AgmMap) map: AgmMap;
 
   ngOnInit() {
-
   }
 
   initialize(m) {
@@ -71,37 +97,38 @@ export class AgmMapComponent implements OnInit {
       //
       // Don't worry about spaces,
       // just make sure chars are the same and in the same order ------------>>>>> {lat: 33.3333, lng: 84.4444}
-      const j = JSON.stringify(this.testRes);
-      console.log('line 80: agm-map.component.ts: j = ' + j + ' ,and should = "{ "lat": number, "lng": number }"');
-      const k = JSON.parse(j);
-      console.log('line 82: agm-map.component.ts: k = ' + k + ' ,and should = {object, Object] === Object { lat: number, lng: number }');
-      console.log('line 83: agm-map.component.ts: k.lat = ' + k.lat);
-      console.log('line 84: agm-map.component.ts: k.lng = ' + k.lng);
-      this.latitude = this.m.lat;
-      this.longitude = this.m.lng;
-      console.log('line 88: agm-map.component.ts: this.latitude ' + this.latitude);
-      console.log('line 89: agm-map.component.ts: this.longitude ' + this.longitude);
-      this.zoom = 2;
-      this.airportLatLng = new google.maps.LatLng({lat: this.m.lat, lng: this.m.lng});
-      console.log('line 92: agm-map.component.ts: JSON.stringify(this.airportLatLng)) ' + JSON.stringify(this.airportLatLng));
-      this.zoom = 10;
+      console.log(m);
+      this.latitude = parseFloat(this.m.lat);
+      this.longitude = parseFloat(this.m.lng);
+      console.log('this.latitude = ' + this.latitude);
+      console.log('this.longitude = ' + this.longitude);
+      this.airportLatLng = new google.maps.LatLng({lat: this.latitude, lng: this.longitude});
+      console.log('JSON.stringify(this.airportLatLng)) = ' + JSON.stringify(this.airportLatLng));
       this.marker = new google.maps.Marker({position: this.m, map: this.map});
     });
   }
 
   setAirportCoordinates() {
-    // this.http.post(this.apiRoot + '/LongandLatfromCoords', this.searchForm.searchForm.value.airport).subscribe(
-      // res => {
+    if (this.searchForm.searchForm.value.airport.length === 3) {
+      this.searchForm.searchForm.value.airport = '!'
+        + this.searchForm.searchForm.value.airport[0]
+        + this.searchForm.searchForm.value.airport[1]
+        + this.searchForm.searchForm.value.airport[2];
+    }
+    this.http.post(this.apiRoot + '/LongandLatfromCoords', this.searchForm.searchForm.value.airport).subscribe(
+       res => {
         this.displayResponse = true;
         this.testRes = {lat: 33.3333, lng: -84.4444};
         console.log(this.testRes);
         // res = this.testRes;
         console.log(this.testRes);
-        this.m = JSON.parse(JSON.stringify(this.testRes));
+        this.m = JSON.parse(JSON.stringify(res));
+        console.log(this.m);
+        this.zoom = 2;
         this.initialize(this.m);
-      // }, err => {
-       // console.error(err);
-      // }
-    // );
+      }, err => {
+         console.error(err);
+      }
+    );
   }
 }
