@@ -5,25 +5,27 @@
   [longitude]="longitude"
   [disableDefaultUI]="true"
   [zoomControl]="true"
-  [zoom] = "zoom" >
+  [zoom] = "zoom"
+  [latLngBoundsLiteral] ="latLngBounds_DEFAULT">
 
   <agm-marker
     [latitude]="latitude"
     [longitude]="longitude">
 
     <agm-info-window>
-      <strong>
         <div class="row justify-content-center">
-        {{searchForm}}
-        </div>
+          Type: {{type}}
+          <br>
+        IATA/ICAO: {{airportCode}}/{{icaoConversion}}
         <br>
-        ( Latitude = {{latitude}}, Longitude = {{longitude}} )
-      </strong>
+        Latitude = {{latitude}}, Longitude = {{longitude}}
+        </div>
     </agm-info-window>
 
   </agm-marker>
 
-  <agm-circle [latitude]="latitude" [longitude]="longitude"
+  <agm-circle [latitude]="latitude"
+              [longitude]="longitude"
               [radius]="radius"
               [fillColor]="color"
               [circleDraggable]="false"

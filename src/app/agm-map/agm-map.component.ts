@@ -6,10 +6,12 @@ import { GoogleMapsAPIWrapper } from '@agm/core/services';
 import {AgmMarker} from '@agm/core';
 import {AgmCoreModule} from '@agm/core';
 import {SearchFormComponent} from '../search-form/search-form.component';
+
 import {GoogleMap, MapOptions} from '@agm/core/services/google-maps-types';
 import {FitBoundsService} from '@agm/core/services/fit-bounds';
 
 declare var google: any;
+const icao = require('icao');
 
 @Component({
   selector: 'app-agm-map',
@@ -36,12 +38,18 @@ export class AgmMapComponent implements OnInit {
   private color: string;
   private m: any;
   private airportLatLng: LatLng;
-  private latLngBounds: LatLngBounds;
+  private airportCode: string;
+  private type: string;
+  /**
+   * If we wanted to update the default fitBounds,
+   * we could do so by changing the values of
+   * the 4 'readonly' variables below.
+   */
   private readonly top_DEFAULT: 24.7433195; // north lat
   private readonly bottom_DEFAULT: 49.3457868; // south lat
   private readonly left_DEFAULT: -124.7844079; // west long
   private readonly right_DEFAULT: -66.9513812; // east long
-  latLngBounds_DEFAULT: LatLngBoundsLiteral = {
+  private latLngBounds_DEFAULT: LatLngBoundsLiteral = {
     north: this.top_DEFAULT,
     south: this.bottom_DEFAULT,
     west: this.left_DEFAULT,
@@ -51,6 +59,13 @@ export class AgmMapComponent implements OnInit {
   private left: number;
   private top: number;
   private right: number;
+  /*private latLngBounds: LatLngBounds = {
+
+  };*/
+  private icaoConversion: string;
+  private coordsArray: Array<object>;
+  private coordsArray_lat: object;
+  private coordsArray_lng: object;
   constructor(private API_Loader: MapsAPILoader,
               private zone: NgZone,
               private wrapper: GoogleMapsAPIWrapper,
@@ -59,28 +74,17 @@ export class AgmMapComponent implements OnInit {
     this.apiRoot = 'http://localhost:8080';
     this.zone = zone;
     this.displayResponse = false;
-    this.zoom = 0;
-    this.testRes = {lat: 26.3729, lng: -80.1062}; // <<<<<<<<<---------we need coords in this format
+    this.testRes = {lat: 41.4925, lng: -99.9018};
     this.color = 'red';
     this.radius = 5000;
     this.wrapper = wrapper;
-    // LatLngBounds([sw, ne])
-    // continental us
-    /*this.bottom = 49.3457868; // south lat
-    this.left = -124.7844079; // west long
-    this.top =  24.7433195; // north lat
-    this.right = -66.9513812; // east long*/
-    // this.latLngBounds = this.latLngBounds_DEFAULT;
     this.m = JSON.parse(JSON.stringify(this.testRes));
-    //
-    // ***Note***
-    //////////////////// START
-    // We want the coordinate data passed into this method in pre-formatted as an object that is simple to JSON.stringify:
-    // {lat: 33.3333, lng: 84.4444}; // <<<<<<<<<---------we need coords to be in this format, when passed into frontend
-    // code from backend. Could be coming directly from db, or we could include code to extend the parser's functionality, so that
-    // the coords appear in the necessary format before backend's response to front end's http post request.
-    /////////////////// END
-    this.initialize(this.m);
+    this.API_Loader.load().then(() => {
+      this.latitude = parseFloat(this.m.lat);
+      this.longitude = parseFloat(this.m.lng);
+      this.airportLatLng = new google.maps.LatLng({lat: this.latitude, lng: this.longitude});
+      this.zoom = 3;
+    });
   }
   @ViewChild(AgmMap) map: AgmMap;
 
@@ -104,6 +108,7 @@ export class AgmMapComponent implements OnInit {
       console.log('this.longitude = ' + this.longitude);
       this.airportLatLng = new google.maps.LatLng({lat: this.latitude, lng: this.longitude});
       console.log('JSON.stringify(this.airportLatLng)) = ' + JSON.stringify(this.airportLatLng));
+      this.zoom = 3;
       this.marker = new google.maps.Marker({position: this.m, map: this.map});
     });
   }
@@ -115,12 +120,25 @@ export class AgmMapComponent implements OnInit {
         + this.searchForm.searchForm.value.airport[1]
         + this.searchForm.searchForm.value.airport[2];
     }
+    this.icaoConversion = 'K'
+      + this.searchForm.searchForm.value.airport[1]
+      + this.searchForm.searchForm.value.airport[2]
+      + this.searchForm.searchForm.value.airport[3];
+    this.searchForm.searchForm.value.airport = this.searchForm.searchForm.value.airport.toUpperCase();
+    this.airportCode = this.searchForm.searchForm.value.airport;
+    this.type = this.searchForm.searchForm.value.type;
+    // marker colors will be coded according to type.Two additional types will populate the map when user conducts a query search:
+    // (1) "no notams found," and (2) Type not specified by user.
+    this.icaoConversion = this.icaoConversion.toUpperCase();
     this.http.post(this.apiRoot + '/LongandLatfromCoords', this.searchForm.searchForm.value.airport).subscribe(
        res => {
         this.displayResponse = true;
-        this.testRes = {lat: 33.3333, lng: -84.4444};
+        this.coordsArray = icao[this.icaoConversion];
+        this.coordsArray_lat = this.coordsArray[0];
+        this.coordsArray_lng = this.coordsArray[1];
+        this.testRes = {lat: this.coordsArray_lat, lng: this.coordsArray_lng};
         console.log(this.testRes);
-        // res = this.testRes;
+        res = this.testRes;
         console.log(this.testRes);
         this.m = JSON.parse(JSON.stringify(res));
         console.log(this.m);

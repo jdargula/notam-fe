@@ -14,7 +14,7 @@ export class SearchFormComponent implements OnInit {
   private displayResponse: boolean;
   private displayMoreDetails: boolean;
   private rawNotam: Object;
-  private notams: Object;
+  notams: Object;
   searchForm = new FormGroup({
     airport: new FormControl(''),
     type: new FormControl('')
@@ -26,7 +26,7 @@ export class SearchFormComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.http.post(this.apiRoot + '/AirportCodeALL', 'IATA/ICAO').subscribe(
+    this.http.post(this.apiRoot + '/GetAllNotams', 'IATA/ICAO').subscribe(
       res => {
         console.log('res');
         console.log(JSON.stringify(res));
@@ -39,12 +39,13 @@ export class SearchFormComponent implements OnInit {
   }
 
   submitSearch() {
-     if (this.searchForm.value.airport.length === 3) {
-       this.searchForm.value.airport = '!'
-         + this.searchForm.value.airport[0]
-         + this.searchForm.value.airport[1]
-         + this.searchForm.value.airport[2];
-     }
+    if (this.searchForm.value.airport.length === 3) {
+      this.searchForm.value.airport = '!'
+        + this.searchForm.value.airport[0]
+        + this.searchForm.value.airport[1]
+        + this.searchForm.value.airport[2];
+    }
+    this.searchForm.value.airport = this.searchForm.value.airport.toUpperCase();
      this.http.post(this.apiRoot + '/AirportCodeMultiple', this.searchForm.value.airport).subscribe(
        res => {
          console.log('res');
