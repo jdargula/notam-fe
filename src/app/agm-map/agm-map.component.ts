@@ -94,13 +94,6 @@ export class AgmMapComponent implements OnInit {
   initialize(m) {
     this.API_Loader.load().then(() => {
       this.m = m;
-      // ***Note***
-      // We want the coordinate data passed into this method
-      // pre-formatted to accommodate the JS-Object-to-JS
-      // ON-string-serialization method "stringify":
-      //
-      // Don't worry about spaces,
-      // just make sure chars are the same and in the same order ------------>>>>> {lat: 33.3333, lng: 84.4444}
       console.log(m);
       this.latitude = parseFloat(this.m.lat);
       this.longitude = parseFloat(this.m.lng);
@@ -127,9 +120,13 @@ export class AgmMapComponent implements OnInit {
     this.searchForm.searchForm.value.airport = this.searchForm.searchForm.value.airport.toUpperCase();
     this.airportCode = this.searchForm.searchForm.value.airport;
     this.type = this.searchForm.searchForm.value.type;
-    // marker colors will be coded according to type.Two additional types will populate the map when user conducts a query search:
+    // marker colors will be coded according to type.Two additional
+    // types will populate the map when user conducts a query search:
     // (1) "no notams found," and (2) Type not specified by user.
     this.icaoConversion = this.icaoConversion.toUpperCase();
+    // Info from http post call below is not being used at this time, due to current formatting of lat and lng values in our db.
+    // Workaround discovered is the "icao" npm imported node package module. Although this limits functionality
+    // of our app to some extent, the icao package works great for our needs at this time.
     this.http.post(this.apiRoot + '/LongandLatfromCoords', this.searchForm.searchForm.value.airport).subscribe(
        res => {
         this.displayResponse = true;

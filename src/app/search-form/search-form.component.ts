@@ -14,7 +14,8 @@ export class SearchFormComponent implements OnInit {
   private displayResponse: boolean;
   private displayMoreDetails: boolean;
   private rawNotam: Object;
-  notams: Object;
+  airportCodesArrayOnInit: any[];
+  notams: any;
   searchForm = new FormGroup({
     airport: new FormControl(''),
     type: new FormControl('')
@@ -31,6 +32,14 @@ export class SearchFormComponent implements OnInit {
         console.log('res');
         console.log(JSON.stringify(res));
         this.notams = res;
+        const airportCodesOnInit = [];
+        console.log(this.notams);
+        this.notams.forEach(function(notam) {
+          console.log(notam.col2);
+          airportCodesOnInit.push(notam.col2);
+        });
+        this.airportCodesArrayOnInit = airportCodesOnInit;
+        console.log(this.airportCodesArrayOnInit);
         this.displayResponse = true;
       }, err => {
         console.error(err);
