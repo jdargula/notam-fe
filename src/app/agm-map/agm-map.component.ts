@@ -66,6 +66,7 @@ export class AgmMapComponent implements OnInit {
   private coordsArray: Array<object>;
   private coordsArray_lat: object;
   private coordsArray_lng: object;
+  private maxWidth: number;
   constructor(private API_Loader: MapsAPILoader,
               private zone: NgZone,
               private wrapper: GoogleMapsAPIWrapper,
@@ -80,8 +81,8 @@ export class AgmMapComponent implements OnInit {
     this.wrapper = wrapper;
     this.m = JSON.parse(JSON.stringify(this.testRes));
     this.API_Loader.load().then(() => {
-      this.latitude = parseFloat(this.m.lat);
-      this.longitude = parseFloat(this.m.lng);
+      this.latitude = Math.round(parseFloat(this.m.lat) * 10000) / 10000;
+      this.longitude = Math.round(parseFloat(this.m.lng) * 10000) / 10000;
       this.airportLatLng = new google.maps.LatLng({lat: this.latitude, lng: this.longitude});
       this.zoom = 3;
     });
@@ -95,13 +96,13 @@ export class AgmMapComponent implements OnInit {
     this.API_Loader.load().then(() => {
       this.m = m;
       console.log(m);
-      this.latitude = parseFloat(this.m.lat);
-      this.longitude = parseFloat(this.m.lng);
+      this.latitude = Math.round(parseFloat(this.m.lat) * 10000) / 10000;
+      this.longitude = Math.round(parseFloat(this.m.lng) * 10000) / 10000;
       console.log('this.latitude = ' + this.latitude);
       console.log('this.longitude = ' + this.longitude);
       this.airportLatLng = new google.maps.LatLng({lat: this.latitude, lng: this.longitude});
-      console.log('JSON.stringify(this.airportLatLng)) = ' + JSON.stringify(this.airportLatLng));
       this.zoom = 3;
+      this.maxWidth = 500;
       this.marker = new google.maps.Marker({position: this.m, map: this.map});
     });
   }

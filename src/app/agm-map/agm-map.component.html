@@ -12,15 +12,17 @@
     [latitude]="latitude"
     [longitude]="longitude">
 
-    <agm-info-window>
-        <div class="row justify-content-center">
-          Type: {{type}}
+    <div class="row justify-content-center">
+    <agm-info-window [maxWidth] = "maxWidth">
+
+          [Type] : {{type}}
           <br>
-        IATA/ICAO: {{airportCode}}/{{icaoConversion}}
+        [IATA/ICAO] : {{airportCode}}/{{icaoConversion}}
         <br>
-        Latitude = {{latitude}}, Longitude = {{longitude}}
-        </div>
+        [Latitude] : {{latitude}}, [Longitude] : {{longitude}}
+
     </agm-info-window>
+    </div>
 
   </agm-marker>
 
