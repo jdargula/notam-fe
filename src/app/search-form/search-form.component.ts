@@ -57,7 +57,7 @@ export class SearchFormComponent implements OnInit {
     this.searchForm.value.airport = this.searchForm.value.airport.toUpperCase();
      this.http.post(this.apiRoot + '/AirportCodeMultiple', this.searchForm.value.airport).subscribe(
        res => {
-         console.log('res');
+         console.log(res);
          console.log(JSON.stringify(res));
          this.notams = res;
          this.displayResponse = true;

@@ -67,6 +67,11 @@ export class AgmMapComponent implements OnInit {
   private coordsArray_lat: object;
   private coordsArray_lng: object;
   private maxWidth: number;
+  private typeOfNotamArrayOnInit: any[];
+  private notams: any;
+  private airportCodesArrayOnInit: any[];
+  private markerLatitude: number;
+  private markerLongitude: number;
   constructor(private API_Loader: MapsAPILoader,
               private zone: NgZone,
               private wrapper: GoogleMapsAPIWrapper,
@@ -84,12 +89,78 @@ export class AgmMapComponent implements OnInit {
       this.latitude = Math.round(parseFloat(this.m.lat) * 10000) / 10000;
       this.longitude = Math.round(parseFloat(this.m.lng) * 10000) / 10000;
       this.airportLatLng = new google.maps.LatLng({lat: this.latitude, lng: this.longitude});
-      this.zoom = 3;
     });
   }
   @ViewChild(AgmMap) map: AgmMap;
 
   ngOnInit() {
+    this.API_Loader.load().then(() => {
+        this.http.post(this.apiRoot + '/GetAllNotams', 'IATA/ICAO').subscribe(
+          res => {
+            console.log(res);
+            console.log(JSON.stringify(res));
+            this.notams = res;
+            const notamKeyOnInit = [];
+            const airportCodesOnInit = [];
+            const typeOfNotamOnInit = [];
+            let initAirportCode = '';
+            let initNotamType = '';
+            console.log(this.searchForm.notams);
+            /**
+             * The fact that the frontend client makes the request by http to post all of the data for rendering
+             * at runtime, storing the data locally in multiple arrays, would not be considered good practice
+             * in data-intensive cases, for obvious reasons. Old notam data would likely be stored in some
+             * separate archival backend that makes only a fraction of the calls to our app's backend compared
+             * to calls to the app server made by the frontend). With this current implementation, the user's
+             * device would be responsible for caching the data and then the app could be set to purge the data
+             * when the user log's off.
+             */
+            this.notams.forEach(function (notam) {
+              notamKeyOnInit.push(notam.col1);
+              initAirportCode = notam.col2;
+              airportCodesOnInit.push(initAirportCode);
+              initNotamType = notam.col3;
+              typeOfNotamOnInit.push(initNotamType);
+            });
+            this.airportCodesArrayOnInit = airportCodesOnInit;
+            console.log(this.airportCodesArrayOnInit);
+            this.typeOfNotamArrayOnInit = typeOfNotamOnInit;
+            console.log(this.typeOfNotamArrayOnInit);
+            for (let index = 0; index < this.airportCodesArrayOnInit.length; index++) {
+              if (this.airportCodesArrayOnInit[index] !== null) {
+                this.airportCode = this.airportCodesArrayOnInit[index];
+                if (this.airportCode === '!FDC') {
+                  this.airportCode = '!IAD';
+                }
+                this.type = this.typeOfNotamArrayOnInit[index];
+                this.icaoConversion = 'K'
+                  + this.airportCode[1]
+                  + this.airportCode[2]
+                  + this.airportCode[3];
+                this.coordsArray = icao[this.icaoConversion];
+                this.coordsArray_lat = this.coordsArray[0];
+                this.coordsArray_lng = this.coordsArray[1];
+                this.testRes = {lat: this.coordsArray_lat, lng: this.coordsArray_lng};
+                console.log(this.testRes);
+                console.log('index = ' + index);
+                this.m = JSON.parse(JSON.stringify(this.testRes));
+                console.log(this.m);
+                this.latitude = Math.round(parseFloat(this.m.lat) * 10000) / 10000;
+                this.longitude = Math.round(parseFloat(this.m.lng) * 10000) / 10000;
+                this.markerLatitude = this.latitude;
+                this.markerLongitude = this.longitude;
+                console.log('this.latitude = ' + this.latitude);
+                console.log('this.longitude = ' + this.longitude);
+                this.maxWidth = 500;
+                this.zoom = 4;
+              }
+            }
+          });
+        this.displayResponse = true;
+      }, err => {
+        console.error(err);
+      }
+    );
   }
 
   initialize(m) {
@@ -101,9 +172,10 @@ export class AgmMapComponent implements OnInit {
       console.log('this.latitude = ' + this.latitude);
       console.log('this.longitude = ' + this.longitude);
       this.airportLatLng = new google.maps.LatLng({lat: this.latitude, lng: this.longitude});
-      this.zoom = 3;
       this.maxWidth = 500;
       this.marker = new google.maps.Marker({position: this.m, map: this.map});
+      this.markerLatitude = this.latitude;
+      this.markerLongitude = this.longitude;
     });
   }
 
@@ -140,7 +212,6 @@ export class AgmMapComponent implements OnInit {
         console.log(this.testRes);
         this.m = JSON.parse(JSON.stringify(res));
         console.log(this.m);
-        this.zoom = 2;
         this.initialize(this.m);
       }, err => {
          console.error(err);
