@@ -29,7 +29,7 @@ export class AgmMapComponent implements OnInit {
   private apiRoot: string;
   private displayResponse: boolean;
   private displayMoreDetails: boolean;
-  private marker: AgmMarker;
+  private marker: any;
   private testRes: Object;
   private latitude: number;
   private longitude: number;
@@ -40,6 +40,7 @@ export class AgmMapComponent implements OnInit {
   private airportLatLng: LatLng;
   private airportCode: string;
   private type: string;
+  private markers: Array<any> = [];
   /**
    * If we wanted to update the default fitBounds,
    * we could do so by changing the values of
@@ -53,7 +54,7 @@ export class AgmMapComponent implements OnInit {
     north: this.top_DEFAULT,
     south: this.bottom_DEFAULT,
     west: this.left_DEFAULT,
-    east: this.right_DEFAULT
+    east: this.right_DEFAULT,
   };
   private bottom: number;
   private left: number;
@@ -81,14 +82,19 @@ export class AgmMapComponent implements OnInit {
     this.zone = zone;
     this.displayResponse = false;
     this.testRes = {lat: 41.4925, lng: -99.9018};
-    this.color = 'red';
-    this.radius = 5000;
     this.wrapper = wrapper;
     this.m = JSON.parse(JSON.stringify(this.testRes));
     this.API_Loader.load().then(() => {
       this.latitude = Math.round(parseFloat(this.m.lat) * 10000) / 10000;
       this.longitude = Math.round(parseFloat(this.m.lng) * 10000) / 10000;
       this.airportLatLng = new google.maps.LatLng({lat: this.latitude, lng: this.longitude});
+      this.markerLatitude = this.latitude;
+      this.markerLongitude = this.longitude;
+      this.marker = new google.maps.Marker({position: this.airportLatLng, map: this.map});
+      this.maxWidth = 500;
+      this.zoom = 4;
+      this.color = 'red';
+      this.radius = 5000;
     });
   }
   @ViewChild(AgmMap) map: AgmMap;
@@ -147,12 +153,20 @@ export class AgmMapComponent implements OnInit {
                 console.log(this.m);
                 this.latitude = Math.round(parseFloat(this.m.lat) * 10000) / 10000;
                 this.longitude = Math.round(parseFloat(this.m.lng) * 10000) / 10000;
+                this.airportLatLng = new google.maps.LatLng({lat: this.latitude, lng: this.longitude});
                 this.markerLatitude = this.latitude;
                 this.markerLongitude = this.longitude;
-                console.log('this.latitude = ' + this.latitude);
-                console.log('this.longitude = ' + this.longitude);
+                this.marker = new google.maps.Marker({position: this.airportLatLng, map: this.map});
+                console.log('this.latitude = ' + this.markerLatitude);
+                console.log('this.longitude = ' + this.markerLongitude);
                 this.maxWidth = 500;
                 this.zoom = 4;
+                this.color = 'red';
+                this.radius = 5000;
+                this.markers.push({
+                  lat: this.markerLatitude,
+                  lng: this.markerLongitude
+                }); console.log(this.markers);
               }
             }
           });
@@ -169,13 +183,14 @@ export class AgmMapComponent implements OnInit {
       console.log(m);
       this.latitude = Math.round(parseFloat(this.m.lat) * 10000) / 10000;
       this.longitude = Math.round(parseFloat(this.m.lng) * 10000) / 10000;
-      console.log('this.latitude = ' + this.latitude);
-      console.log('this.longitude = ' + this.longitude);
       this.airportLatLng = new google.maps.LatLng({lat: this.latitude, lng: this.longitude});
-      this.maxWidth = 500;
-      this.marker = new google.maps.Marker({position: this.m, map: this.map});
       this.markerLatitude = this.latitude;
       this.markerLongitude = this.longitude;
+      this.marker = new google.maps.Marker({position: this.airportLatLng, map: this.map});
+      this.maxWidth = 500;
+      this.zoom = 4;
+      this.color = 'red';
+      this.radius = 5000;
     });
   }
 

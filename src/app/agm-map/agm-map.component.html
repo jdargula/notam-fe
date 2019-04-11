@@ -9,8 +9,9 @@
   [latLngBoundsLiteral] ="latLngBounds_DEFAULT">
 
   <agm-marker
-    [latitude]="markerLatitude"
-    [longitude]="markerLongitude">
+    *ngFor="let marker of markers;"
+    [latitude]="marker.lat"
+    [longitude]="marker.lng">
 
     <div class="row justify-content-center">
     <agm-info-window [maxWidth] = "maxWidth">
