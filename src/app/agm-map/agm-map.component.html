@@ -13,17 +13,11 @@
     [latitude]="marker.lat"
     [longitude]="marker.lng">
 
-    <div class="row justify-content-center">
     <agm-info-window [maxWidth] = "maxWidth">
-
-          [Type] : {{type}}
-          <br>
-        [IATA/ICAO] : {{airportCode}}/{{icaoConversion}}
-        <br>
-        [Latitude] : {{latitude}}, [Longitude] : {{longitude}}
-
+      [Type Of Notam]: {{type}} <br>
+      [IATA/ICAO]: {{airportCode}} <br>
+      [Coordinates]: {{latitude_infoWindow}}, {{longitude_infoWindow}}>
     </agm-info-window>
-    </div>
 
   </agm-marker>
 
@@ -43,8 +37,8 @@
       <div class="row justify-content-center">
           <div id ="nav">
             <button
-              (click)="setAirportCoordinates(); searchForm.submitSearch()"
-                    class="btn btn-outline-primary col-centered">Submit Button
+              (click)="setAirportCoordinates(); searchForm.submitSearch()">
+              Submit Search
             </button>
 
         </div>

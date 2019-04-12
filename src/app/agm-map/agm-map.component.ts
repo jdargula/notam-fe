@@ -1,14 +1,12 @@
-import {Component, NgModule, NgZone, OnInit} from '@angular/core';
-import {HttpClient} from '@angular/common/http';
+import { Component, NgModule, NgZone, OnInit } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
 import { ViewChild } from '@angular/core';
-import {AgmFitBounds, AgmMap, FitBoundsDetails, LatLng, LatLngBounds, LatLngBoundsLiteral, LatLngLiteral, MapsAPILoader} from '@agm/core';
+import { AgmMap, LatLng, LatLngBoundsLiteral, MapsAPILoader } from '@agm/core';
 import { GoogleMapsAPIWrapper } from '@agm/core/services';
-import {AgmMarker} from '@agm/core';
-import {AgmCoreModule} from '@agm/core';
-import {SearchFormComponent} from '../search-form/search-form.component';
-
-import {GoogleMap, MapOptions} from '@agm/core/services/google-maps-types';
-import {FitBoundsService} from '@agm/core/services/fit-bounds';
+import { AgmMarker } from '@agm/core';
+import { AgmCoreModule } from '@agm/core';
+import { SearchFormComponent } from '../search-form/search-form.component';
+import {InfoWindow, Marker} from '@agm/core/services/google-maps-types';
 
 declare var google: any;
 const icao = require('icao');
@@ -28,9 +26,8 @@ const icao = require('icao');
 export class AgmMapComponent implements OnInit {
   private apiRoot: string;
   private displayResponse: boolean;
-  private displayMoreDetails: boolean;
   private marker: any;
-  private testRes: Object;
+  private airportCoords: Object;
   private latitude: number;
   private longitude: number;
   private zoom: number;
@@ -41,6 +38,8 @@ export class AgmMapComponent implements OnInit {
   private airportCode: string;
   private type: string;
   private markers: Array<any> = [];
+  private latitude_infoWindow: number;
+  private longitude_infoWindow: number;
   /**
    * If we wanted to update the default fitBounds,
    * we could do so by changing the values of
@@ -60,9 +59,6 @@ export class AgmMapComponent implements OnInit {
   private left: number;
   private top: number;
   private right: number;
-  /*private latLngBounds: LatLngBounds = {
-
-  };*/
   private icaoConversion: string;
   private coordsArray: Array<object>;
   private coordsArray_lat: object;
@@ -71,8 +67,6 @@ export class AgmMapComponent implements OnInit {
   private typeOfNotamArrayOnInit: any[];
   private notams: any;
   private airportCodesArrayOnInit: any[];
-  private markerLatitude: number;
-  private markerLongitude: number;
   constructor(private API_Loader: MapsAPILoader,
               private zone: NgZone,
               private wrapper: GoogleMapsAPIWrapper,
@@ -81,25 +75,15 @@ export class AgmMapComponent implements OnInit {
     this.apiRoot = 'http://localhost:8080';
     this.zone = zone;
     this.displayResponse = false;
-    this.testRes = {lat: 41.4925, lng: -99.9018};
     this.wrapper = wrapper;
-    this.m = JSON.parse(JSON.stringify(this.testRes));
-    this.API_Loader.load().then(() => {
-      this.latitude = Math.round(parseFloat(this.m.lat) * 10000) / 10000;
-      this.longitude = Math.round(parseFloat(this.m.lng) * 10000) / 10000;
-      this.airportLatLng = new google.maps.LatLng({lat: this.latitude, lng: this.longitude});
-      this.markerLatitude = this.latitude;
-      this.markerLongitude = this.longitude;
-      this.marker = new google.maps.Marker({position: this.airportLatLng, map: this.map});
-      this.maxWidth = 500;
-      this.zoom = 4;
-      this.color = 'red';
-      this.radius = 5000;
-    });
   }
   @ViewChild(AgmMap) map: AgmMap;
 
   ngOnInit() {
+    this.displayAllActiveNOTAMs();
+  }
+
+  displayAllActiveNOTAMs() {
     this.API_Loader.load().then(() => {
         this.http.post(this.apiRoot + '/GetAllNotams', 'IATA/ICAO').subscribe(
           res => {
@@ -113,13 +97,14 @@ export class AgmMapComponent implements OnInit {
             let initNotamType = '';
             console.log(this.searchForm.notams);
             /**
-             * The fact that the frontend client makes the request by http to post all of the data for rendering
-             * at runtime, storing the data locally in multiple arrays, would not be considered good practice
-             * in data-intensive cases, for obvious reasons. Old notam data would likely be stored in some
-             * separate archival backend that makes only a fraction of the calls to our app's backend compared
-             * to calls to the app server made by the frontend). With this current implementation, the user's
-             * device would be responsible for caching the data and then the app could be set to purge the data
-             * when the user log's off.
+             * ***Note: The fact that the frontend client makes the request by http to post all of the data
+             * for rendering at runtime, storing the data locally in multiple arrays, would not be considered
+             * good practice in data-intensive cases. In an implementation mindful of a user's resources for
+             * storage, old notam data would likely be stored in some separate archival backend that makes
+             * only a fraction of the calls to our app's backend compared to requests made by the frontend).
+             * With this current implementation, the user's device would be responsible for caching
+             * the data and then the app could be set to purge the data when the user log's off,
+             * or refreshes the cache when submitting a query for updated NOTAM data.
              */
             this.notams.forEach(function (notam) {
               notamKeyOnInit.push(notam.col1);
@@ -146,29 +131,25 @@ export class AgmMapComponent implements OnInit {
                 this.coordsArray = icao[this.icaoConversion];
                 this.coordsArray_lat = this.coordsArray[0];
                 this.coordsArray_lng = this.coordsArray[1];
-                this.testRes = {lat: this.coordsArray_lat, lng: this.coordsArray_lng};
-                console.log(this.testRes);
+                this.airportCoords = {lat: this.coordsArray_lat, lng: this.coordsArray_lng};
+                console.log(this.airportCoords);
                 console.log('index = ' + index);
-                this.m = JSON.parse(JSON.stringify(this.testRes));
+                this.m = JSON.parse(JSON.stringify(this.airportCoords));
                 console.log(this.m);
-                this.latitude = Math.round(parseFloat(this.m.lat) * 10000) / 10000;
-                this.longitude = Math.round(parseFloat(this.m.lng) * 10000) / 10000;
+                this.latitude = parseFloat(this.m.lat);
+                this.longitude = parseFloat(this.m.lng);
+                this.latitude_infoWindow = Math.round(parseFloat(this.m.lat) * 10000) / 10000;
+                this.longitude_infoWindow = Math.round(parseFloat(this.m.lng) * 10000) / 10000;
                 this.airportLatLng = new google.maps.LatLng({lat: this.latitude, lng: this.longitude});
-                this.markerLatitude = this.latitude;
-                this.markerLongitude = this.longitude;
-                this.marker = new google.maps.Marker({position: this.airportLatLng, map: this.map});
-                console.log('this.latitude = ' + this.markerLatitude);
-                console.log('this.longitude = ' + this.markerLongitude);
                 this.maxWidth = 500;
+                this.addMarker(this.airportLatLng);
                 this.zoom = 4;
                 this.color = 'red';
                 this.radius = 5000;
-                this.markers.push({
-                  lat: this.markerLatitude,
-                  lng: this.markerLongitude
-                }); console.log(this.markers);
+                console.log(this.markers);
               }
             }
+            this.setMapOnAll(this.map);
           });
         this.displayResponse = true;
       }, err => {
@@ -177,16 +158,45 @@ export class AgmMapComponent implements OnInit {
     );
   }
 
+  addMarker(location) {
+    this.airportLatLng = location;
+    this.marker = new google.maps.Marker({
+      position: this.airportLatLng,
+      lat: this.airportLatLng.lat(),
+      lng: this.airportLatLng.lng(),
+      map: this.map,
+    });
+    this.markers.push(this.marker);
+  }
+
+  setMapOnAll(map) {
+    this.map = map;
+    for (let i = 0; i < this.markers.length; i++) {
+      this.markers[i].setMap(this.map);
+    }
+  }
+
+  deleteMarkers() {
+    this.clearMarkers();
+    this.markers = [];
+  }
+
+  // Removes the markers from the map, but keeps them in the array.
+  clearMarkers() {
+    this.setMapOnAll(null);
+  }
+
   initialize(m) {
+    this.deleteMarkers();
     this.API_Loader.load().then(() => {
       this.m = m;
       console.log(m);
-      this.latitude = Math.round(parseFloat(this.m.lat) * 10000) / 10000;
-      this.longitude = Math.round(parseFloat(this.m.lng) * 10000) / 10000;
+      this.latitude = parseFloat(this.m.lat);
+      this.longitude = parseFloat(this.m.lng);
+      this.latitude_infoWindow = Math.round(parseFloat(this.m.lat) * 10000) / 10000;
+      this.longitude_infoWindow = Math.round(parseFloat(this.m.lng) * 10000) / 10000;
       this.airportLatLng = new google.maps.LatLng({lat: this.latitude, lng: this.longitude});
-      this.markerLatitude = this.latitude;
-      this.markerLongitude = this.longitude;
-      this.marker = new google.maps.Marker({position: this.airportLatLng, map: this.map});
+      this.addMarker(this.airportLatLng);
       this.maxWidth = 500;
       this.zoom = 4;
       this.color = 'red';
@@ -221,10 +231,10 @@ export class AgmMapComponent implements OnInit {
         this.coordsArray = icao[this.icaoConversion];
         this.coordsArray_lat = this.coordsArray[0];
         this.coordsArray_lng = this.coordsArray[1];
-        this.testRes = {lat: this.coordsArray_lat, lng: this.coordsArray_lng};
-        console.log(this.testRes);
-        res = this.testRes;
-        console.log(this.testRes);
+        this.airportCoords = {lat: this.coordsArray_lat, lng: this.coordsArray_lng};
+        console.log(this.airportCoords);
+        res = this.airportCoords;
+        console.log(this.airportCoords);
         this.m = JSON.parse(JSON.stringify(res));
         console.log(this.m);
         this.initialize(this.m);
