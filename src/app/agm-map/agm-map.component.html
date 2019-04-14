@@ -1,22 +1,24 @@
 <div class="container-fluid">
 
 <agm-map id="map"
-  [latitude]="latitude"
-  [longitude]="longitude"
-  [disableDefaultUI]="true"
-  [zoomControl]="true"
-  [zoom] = "zoom"
+  [center]="center"
+  [zoom]="zoom"
+  [mapTypeId]="mapTypeId"
   [latLngBoundsLiteral] ="latLngBounds_DEFAULT">
 
-  <agm-marker
-    *ngFor="let marker of markers;"
+  <agm-marker *ngFor="let marker of markers;"
+    [position]="marker.position"
     [latitude]="marker.lat"
-    [longitude]="marker.lng">
+    [longitude]="marker.lng"
+    [infoWindow]="marker.infoWindow"
+    [map]="marker.map">
 
-    <agm-info-window [maxWidth] = "maxWidth">
-      [Type Of Notam]: {{type}} <br>
-      [IATA/ICAO]: {{airportCode}} <br>
-      [Coordinates]: {{latitude_infoWindow}}, {{longitude_infoWindow}}>
+    <agm-info-window
+      [maxWidth] = "maxWidth"
+      [content]="contentString"
+      [latitude]="marker.lat"
+      [longitude]="marker.lng">
+      {{contentString}}
     </agm-info-window>
 
   </agm-marker>
