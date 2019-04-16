@@ -1,16 +1,14 @@
-<div class="container-fluid">
+<div class="container">
 
 <agm-map id="map"
   [center]="center"
   [zoom]="zoom"
-  [mapTypeId]="mapTypeId"
-  [latLngBoundsLiteral] ="latLngBounds_DEFAULT">
+  [mapTypeId]="mapTypeId">
 
   <agm-marker *ngFor="let marker of markers;"
     [position]="marker.position"
     [latitude]="marker.lat"
     [longitude]="marker.lng"
-    [infoWindow]="marker.infoWindow"
     [map]="marker.map">
 
     <agm-info-window
@@ -25,14 +23,13 @@
 
   <agm-circle [latitude]="latitude"
               [longitude]="longitude"
-              [radius]="radius"
-              [fillColor]="color"
+              [radius]="5000"
+              [fillColor]="'red'"
               [circleDraggable]="false"
               [editable]="false">
   </agm-circle>
 
 </agm-map>
-</div>
   <form [formGroup]="searchForm.searchForm" (ngSubmit)="setAirportCoordinates()">
 
     <div class="container">
@@ -48,3 +45,5 @@
 
     </div>
   </form>
+</div>
+

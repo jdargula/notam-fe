@@ -1,11 +1,11 @@
 import { Component, NgModule, NgZone, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { ViewChild } from '@angular/core';
-import {AgmMap, AgmMarker, LatLng, LatLngBoundsLiteral, MapsAPILoader} from '@agm/core';
+import {AgmMap, AgmMarker, LatLng, LatLngBounds, LatLngBoundsLiteral, MapsAPILoader} from '@agm/core';
 import { GoogleMapsAPIWrapper } from '@agm/core/services';
 import { AgmCoreModule } from '@agm/core';
 import { SearchFormComponent } from '../search-form/search-form.component';
-import {GoogleMap, InfoWindow, MapOptions, Marker} from '@agm/core/services/google-maps-types';
+import {GoogleMap, InfoWindow, MapOptions, MapTypeId, Marker} from '@agm/core/services/google-maps-types';
 
 declare var google: any;
 const icao = require('icao');
@@ -29,8 +29,8 @@ export class AgmMapComponent implements OnInit {
   private airportCoords: Object;
   private latitude: number;
   private longitude: number;
-  private readonly zoom: number;
   private eventListener: EventListenerOrEventListenerObject;
+  private closeEventListener: EventListenerOrEventListenerObject;
   private radius: number;
   private color: string;
   private m: any;
@@ -74,6 +74,10 @@ export class AgmMapComponent implements OnInit {
   private openInfoWindow: InfoWindow;
   private previousMarkers: Array<Marker>;
   private center: LatLng;
+  private zoom: number;
+  private mapTypeId: MapTypeId;
+  private mapOptions: MapOptions;
+  private bounds: LatLngBounds;
   constructor(private API_Loader: MapsAPILoader,
               private zone: NgZone,
               private wrapper: GoogleMapsAPIWrapper,
@@ -83,19 +87,16 @@ export class AgmMapComponent implements OnInit {
     this.zone = zone;
     this.displayResponse = false;
     this.wrapper = wrapper;
-    this.zoom = 4;
-    this.API_Loader.load().then(() => {
-      this.center = new google.maps.LatLng(39.8333333, -98.585522);
-    });
+    this.latLngBounds_DEFAULT = {
+      north: this.top_DEFAULT,
+      south: this.bottom_DEFAULT,
+      west: this.left_DEFAULT,
+      east: this.right_DEFAULT,
+    };
   }
-  @ViewChild(AgmMap) map: GoogleMap;
-  private mapOptions: MapOptions;
+  @ViewChild('AgmMap') map: GoogleMap;
 
   ngOnInit() {
-    this.displayAllActiveNOTAMs();
-  }
-
-  displayAllActiveNOTAMs() {
     this.API_Loader.load().then(() => {
       this.http.post(this.apiRoot + '/GetAllNotams', 'IATA/ICAO').subscribe(
         res => {
@@ -112,111 +113,127 @@ export class AgmMapComponent implements OnInit {
   }
 
   displayNotams(notams) {
-    this.notams = notams;
-    const notamKeyOnInit = [];
-    const airportCodesOnInit = [];
-    const typeOfNotamOnInit = [];
-    let initAirportCode = '';
-    let initNotamType = '';
-    console.log(this.searchForm.notams);
-    this.setMapOptions();
-    /**
-     * ***Note: The fact that the frontend client makes the request by http to post all of the data
-     * for rendering at runtime, storing the data locally in multiple arrays, would not be considered
-     * good practice in data-intensive cases. In an implementation mindful of a user's resources for
-     * storage, old notam data would likely be stored in some separate archival backend that makes
-     * only a fraction of the calls to our app's backend compared to requests made by the frontend).
-     * With this current implementation, the user's device would be responsible for caching
-     * the data and then the app could be set to purge the data when the user log's off,
-     * or refreshes the cache when submitting a query for updated NOTAM data.
-     */
-    this.notams.forEach(function (notam) {
-      notamKeyOnInit.push(notam.col1);
-      initAirportCode = notam.col2;
-      airportCodesOnInit.push(initAirportCode);
-      initNotamType = notam.col3;
-      typeOfNotamOnInit.push(initNotamType);
-    });
-    this.airportCodesArrayOnInit = airportCodesOnInit;
-    console.log(this.airportCodesArrayOnInit);
-    this.typeOfNotamArrayOnInit = typeOfNotamOnInit;
-    console.log(this.typeOfNotamArrayOnInit);
-    while (this.airportCodesArrayOnInit.length > 0) {
-      this.airportCode = this.airportCodesArrayOnInit.pop();
-      if (this.airportCode === '!FDC') {
-        this.airportCode = '!IAD';
+    this.API_Loader.load().then(() => {
+      this.notams = notams;
+      const notamKeyOnInit = [];
+      const airportCodesOnInit = [];
+      const typeOfNotamOnInit = [];
+      let initAirportCode = '';
+      let initNotamType = '';
+      console.log(this.searchForm.notams);
+      /**
+       * ***Note: The fact that the frontend client makes the request by http to post all of the data
+       * for rendering at runtime, storing the data locally in multiple arrays, would not be considered
+       * good practice in data-intensive cases. In an implementation mindful of a user's resources for
+       * storage, old notam data would likely be stored in some separate archival backend that makes
+       * only a fraction of the calls to our app's backend compared to requests made by the frontend).
+       * With this current implementation, the user's device would be responsible for caching
+       * the data and then the app could be set to purge the data when the user log's off,
+       * or refreshes the cache when submitting a query for updated NOTAM data.
+       */
+      this.notams.forEach(function (notam) {
+        notamKeyOnInit.push(notam.col1);
+        initAirportCode = notam.col2;
+        airportCodesOnInit.push(initAirportCode);
+        initNotamType = notam.col3;
+        typeOfNotamOnInit.push(initNotamType);
+      });
+      this.airportCodesArrayOnInit = airportCodesOnInit;
+      console.log(this.airportCodesArrayOnInit);
+      this.typeOfNotamArrayOnInit = typeOfNotamOnInit;
+      console.log(this.typeOfNotamArrayOnInit);
+      while (this.airportCodesArrayOnInit.length > 0) {
+        this.airportCode = this.airportCodesArrayOnInit.pop();
+        if (this.airportCode === '!FDC') {
+          this.airportCode = '!IAD';
+        }
+        this.type = this.typeOfNotamArrayOnInit.pop();
+        this.icaoConversion = 'K'
+          + this.airportCode[1]
+          + this.airportCode[2]
+          + this.airportCode[3];
+        this.coordsArray = icao[this.icaoConversion];
+        this.coordsArray_lat = this.coordsArray[0];
+        this.coordsArray_lng = this.coordsArray[1];
+        this.airportCoords = {lat: this.coordsArray_lat, lng: this.coordsArray_lng};
+        console.log(this.airportCoords);
+        this.m = JSON.parse(JSON.stringify(this.airportCoords));
+        console.log(this.m);
+        this.latitude = parseFloat(this.m.lat);
+        this.longitude = parseFloat(this.m.lng);
+        this.latitude_infoWindow = Math.round(parseFloat(this.m.lat) * 10000) / 10000;
+        this.longitude_infoWindow = Math.round(parseFloat(this.m.lng) * 10000) / 10000;
+        this.airportLatLng = new google.maps.LatLng({
+          lat: this.latitude,
+          lng: this.longitude
+        });
+        this.maxWidth = 500;
+        this.contentString = '[Type]: ' + this.type + '\n'
+          + '[IATA/ICAO]: ' + this.airportCode + '/' + this.icaoConversion + '\n'
+          + '[Coordinates]: ' + this.latitude_infoWindow + ', ' + this.longitude_infoWindow;
+        this.infoWindow = new google.maps.InfoWindow({
+          maxWidth: this.maxWidth,
+          content: this.contentString,
+          lat: this.airportLatLng.lat(),
+          lng: this.airportLatLng.lng()
+        });
+        this.airportLatLngArray.push(this.airportLatLng);
+        this.infoWindowArray.push(this.infoWindow);
       }
-      this.type = this.typeOfNotamArrayOnInit.pop();
-      this.icaoConversion = 'K'
-        + this.airportCode[1]
-        + this.airportCode[2]
-        + this.airportCode[3];
-      this.coordsArray = icao[this.icaoConversion];
-      this.coordsArray_lat = this.coordsArray[0];
-      this.coordsArray_lng = this.coordsArray[1];
-      this.airportCoords = {lat: this.coordsArray_lat, lng: this.coordsArray_lng};
-      console.log(this.airportCoords);
-      this.m = JSON.parse(JSON.stringify(this.airportCoords));
-      console.log(this.m);
-      this.latitude = parseFloat(this.m.lat);
-      this.longitude = parseFloat(this.m.lng);
-      this.latitude_infoWindow = Math.round(parseFloat(this.m.lat) * 10000) / 10000;
-      this.longitude_infoWindow = Math.round(parseFloat(this.m.lng) * 10000) / 10000;
-      this.airportLatLng = new google.maps.LatLng({
-        lat: this.latitude,
-        lng: this.longitude
+      this.API_Loader.load().then(() => {
+        this.center = new google.maps.LatLng(39.8333333, -98.585522);
+        this.mapOptions = {
+          center: this.center,
+          mapTypeId: google.maps.MapTypeId.SATELLITE,
+          zoom: 3
+        };
+        this.map = new google.maps.Map(document.getElementById('map'),
+          this.mapOptions);
+        google.maps.event.trigger(this.map, 'resize');
       });
-      this.maxWidth = 500;
-      this.contentString = '[Type]: ' + this.type + '\n'
-        + '[IATA/ICAO]: ' + this.airportCode + '/' + this.icaoConversion + '\n'
-        + '[Coordinates]: ' + this.airportLatLng.lat() + ', ' + this.airportLatLng.lng();
-      this.infoWindow = new google.maps.InfoWindow({
-        maxWidth: this.maxWidth,
-        content: this.contentString,
-        lat: this.airportLatLng.lat(),
-        lng: this.airportLatLng.lng()
-      });
-      this.airportLatLngArray.push(this.airportLatLng);
-      this.infoWindowArray.push(this.infoWindow);
-    }
-    this.setMarkers(this.map, this.airportLatLngArray, this.infoWindowArray);
+      this.setMarkers(this.map, this.airportLatLngArray, this.infoWindowArray);
+      google.maps.event.trigger(this.map, 'resize');
+    });
   }
 
-  setMapOptions() {
-    this.mapOptions = {
-      /*center: The geographic center of the 48 states*/
-      /*source: https://en.wikipedia.org/wiki/Geographic_center_of_the_contiguous_United_States*/
-      center: this.center,
-      zoom: this.zoom,
-      mapTypeId: google.maps.MapTypeId.SATELLITE
-    };
-    this.map = new google.maps.Map(document.getElementById('map'),
-      this.mapOptions);
-  }
   setMarkers(map, airportLatLngArray, infoWindowArray) {
-    this.map = map;
-    this.airportLatLngArray = airportLatLngArray;
-    this.infoWindowArray = infoWindowArray;
-    while (this.airportLatLngArray.length > 0) {
-      console.log('this.airportLatLngArray: ' + this.airportLatLngArray);
-      this.airportLatLng = this.airportLatLngArray.pop();
-      console.log('this.airportLatLng = ' + this.airportLatLng);
-      console.log('this.airportLatLngArray = ' + this.airportLatLngArray);
-      this.infoWindow = this.infoWindowArray.pop();
-      this.marker = new google.maps.Marker({
-        map: this.map, position: this.airportLatLng
+    this.API_Loader.load().then(() => {
+      this.airportLatLngArray = airportLatLngArray;
+      this.infoWindowArray = infoWindowArray;
+      this.bounds = new google.maps.LatLngBounds();
+      const infoWindow = new google.maps.InfoWindow();
+      while (this.airportLatLngArray.length > 0) {
+        console.log('this.airportLatLngArray: ' + this.airportLatLngArray);
+        this.airportLatLng = this.airportLatLngArray.pop();
+        console.log('this.airportLatLng = ' + this.airportLatLng);
+        console.log('this.airportLatLngArray = ' + this.airportLatLngArray);
+        this.infoWindow = this.infoWindowArray.pop();
+        this.marker = new google.maps.Marker({
+          map: this.map,
+          position: this.airportLatLng,
+          lat: this.airportLatLng.lat(),
+          lng: this.airportLatLng.lng()
+        });
+        this.bounds.extend(this.airportLatLng);
+        this.markers.push(this.marker);
+        console.log(this.markers);
+        this.eventListener = google.maps.event.addListener(this.marker, 'click', (
+          function (marker, currentContent, currentInfoWindow) {
+            return function () {
+              currentInfoWindow.setContent(currentContent);
+              currentInfoWindow.open(map, marker);
+            };
+          })(this.marker, this.infoWindow.getContent(), infoWindow));
+      }
+      this.map.fitBounds(this.bounds);
+      this.map.setZoom(3);
+      const closeListener = this.eventListener;
+      const refreshedMap = this.map;
+      this.closeEventListener = google.maps.event.addListener(this.map, 'idle', function () {
+        refreshedMap.setZoom(3);
+       // google.maps.event.removeListener(closeListener);
       });
-      this.map.setCenter(this.airportLatLng);
-      this.markers.push(this.marker);
-      console.log(this.markers);
-      this.eventListener = google.maps.event.addListener(this.marker, 'click', (
-        function (marker, currentContent, currentInfoWindow) {
-        return function () {
-          currentInfoWindow.setContent(currentContent);
-          currentInfoWindow.open(map, marker);
-        };
-      })(this.marker, this.infoWindow.getContent(), new google.maps.InfoWindow()));
-    }
+    });
   }
 
   deleteMarkers() {
@@ -225,6 +242,7 @@ export class AgmMapComponent implements OnInit {
 
   clearMarkers() {
     this.resetMarkers(null, null, null);
+    this.markers = [];
   }
 
   resetMarkers(map, airportLatLngArray, infoWindowArray) {
@@ -232,71 +250,49 @@ export class AgmMapComponent implements OnInit {
     this.airportLatLngArray = airportLatLngArray;
     this.infoWindowArray = infoWindowArray;
   }
-  initialize(m) {
-    this.API_Loader.load().then(() => {
-      this.m = m;
-      console.log(m);
-      this.latitude = parseFloat(this.m.lat);
-      this.longitude = parseFloat(this.m.lng);
-      this.latitude_infoWindow = Math.round(parseFloat(this.m.lat) * 10000) / 10000;
-      this.longitude_infoWindow = Math.round(parseFloat(this.m.lng) * 10000) / 10000;
-      this.airportLatLng = new google.maps.LatLng({lat: this.latitude, lng: this.longitude});
-      this.airportLatLngArray.push(this.airportLatLng);
-      this.contentString = '[Type]: ' + this.type + '\n'
-        + '[IATA/ICAO]: ' + this.airportCode + '/' + this.icaoConversion + '\n'
-        + '[Coordinates]: ' + this.airportLatLng.lat() + ', ' + this.airportLatLng.lng();
-      this.infoWindow = new google.maps.InfoWindow({
-        maxWidth: this.maxWidth,
-        content: this.contentString,
-        lat: this.airportLatLng.lat(),
-        lng: this.airportLatLng.lng()
-      });
-      this.airportLatLngArray.push(this.airportLatLng);
-      this.infoWindowArray.push(this.infoWindow);
-    });
-    this.setMarkers(this.map, this.airportLatLngArray, this.infoWindowArray);
-  }
 
   setAirportCoordinates() {
-    this.deleteMarkers();
-    this.airportLatLngArray = new Array<LatLng>();
-    this.infoWindowArray = new Array<InfoWindow>();
-    this.airportLatLng = new google.maps.LatLng();
-    this.setMapOptions();
-    if (this.searchForm.searchForm.value.airport.length === 3) {
-      this.searchForm.searchForm.value.airport = '!'
-        + this.searchForm.searchForm.value.airport[0]
-        + this.searchForm.searchForm.value.airport[1]
-        + this.searchForm.searchForm.value.airport[2];
-    }
-    this.icaoConversion = 'K'
-      + this.searchForm.searchForm.value.airport[1]
-      + this.searchForm.searchForm.value.airport[2]
-      + this.searchForm.searchForm.value.airport[3];
-    this.searchForm.searchForm.value.airport = this.searchForm.searchForm.value.airport.toUpperCase();
-    this.airportCode = this.searchForm.searchForm.value.airport;
-    this.type = this.searchForm.searchForm.value.type;
-    /**
-     * marker colors will be coded according to type.Two additional
-     * types will populate the map when user conducts a query search:
-     * (1) "no notams found," and (2) Type not specified by user.
-     */
-    this.icaoConversion = this.icaoConversion.toUpperCase();
-    /**
-     * Info from http post call below is not being used at this time, due to current formatting of lat and lng values in our db.
-     * Workaround discovered is the "icao" npm imported node package module. Although this limits functionality
-     * of our app to some extent, the icao package works great for our needs at this time.
-     */
-    this.http.post(this.apiRoot + '/AirportCodeMultiple', this.searchForm.searchForm.value.airport).subscribe(
-       res => {
-         console.log(res);
-         console.log(JSON.stringify(res));
-         this.notams = res;
-         this.displayNotams(this.notams);
-         this.displayResponse = true;
-      }, err => {
-         console.error(err);
+    this.API_Loader.load().then(() => {
+      this.deleteMarkers();
+      this.airportLatLngArray = new Array<LatLng>();
+      this.infoWindowArray = new Array<InfoWindow>();
+      this.markers = new Array<Marker>();
+      this.airportLatLng = new google.maps.LatLng();
+      if (this.searchForm.searchForm.value.airport.length === 3) {
+        this.searchForm.searchForm.value.airport = '!'
+          + this.searchForm.searchForm.value.airport[0]
+          + this.searchForm.searchForm.value.airport[1]
+          + this.searchForm.searchForm.value.airport[2];
       }
-    );
+      this.icaoConversion = 'K'
+        + this.searchForm.searchForm.value.airport[1]
+        + this.searchForm.searchForm.value.airport[2]
+        + this.searchForm.searchForm.value.airport[3];
+      this.searchForm.searchForm.value.airport = this.searchForm.searchForm.value.airport.toUpperCase();
+      this.airportCode = this.searchForm.searchForm.value.airport;
+      this.type = this.searchForm.searchForm.value.type;
+      /**
+       * marker colors will be coded according to type.Two additional
+       * types will populate the map when user conducts a query search:
+       * (1) "no notams found," and (2) Type not specified by user.
+       */
+      this.icaoConversion = this.icaoConversion.toUpperCase();
+      /**
+       * Info from http post call below is not being used at this time, due to current formatting of lat and lng values in our db.
+       * Workaround discovered is the "icao" npm imported node package module. Although this limits functionality
+       * of our app to some extent, the icao package works great for our needs at this time.
+       */
+      this.http.post(this.apiRoot + '/AirportCodeMultiple', this.searchForm.searchForm.value.airport).subscribe(
+         res => {
+           console.log(res);
+           console.log(JSON.stringify(res));
+           this.notams = res;
+           this.displayNotams(this.notams);
+           this.displayResponse = true;
+        }, err => {
+           console.error(err);
+        }
+      );
+    });
   }
 }
