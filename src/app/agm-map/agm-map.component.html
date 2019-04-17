@@ -6,7 +6,6 @@
   [mapTypeId]="mapTypeId">
 
   <agm-marker *ngFor="let marker of markers;"
-    [position]="marker.position"
     [latitude]="marker.lat"
     [longitude]="marker.lng"
     [map]="marker.map">
