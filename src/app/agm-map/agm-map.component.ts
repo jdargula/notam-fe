@@ -1,9 +1,8 @@
-import { Component, NgModule, NgZone, OnInit } from '@angular/core';
+import { Component, NgZone, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { ViewChild } from '@angular/core';
 import { LatLng, MapsAPILoader } from '@agm/core';
 import { GoogleMapsAPIWrapper } from '@agm/core/services';
-import { AgmCoreModule } from '@agm/core';
 import { SearchFormComponent } from '../search-form/search-form.component';
 import {GoogleMap, InfoWindow, MapOptions, MapTypeId, Marker} from '@agm/core/services/google-maps-types';
 
@@ -16,12 +15,6 @@ const icao = require('icao');
   styleUrls: ['./agm-map.component.css']
 })
 
-@NgModule({
-  imports: [
-    AgmCoreModule
-  ],
-})
-
 export class AgmMapComponent implements OnInit {
   private apiRoot: string;
   private displayResponse: boolean;
@@ -29,8 +22,6 @@ export class AgmMapComponent implements OnInit {
   private airportCoords: Object;
   private latitude: number;
   private longitude: number;
-  private eventListener: EventListenerOrEventListenerObject;
-  private closeEventListener: EventListenerOrEventListenerObject;
   private radius: number;
   private color: string;
   private m: any;
@@ -204,30 +195,31 @@ export class AgmMapComponent implements OnInit {
           lng: this.airportLatLng.lng()
         });
         this.marker.setPosition(this.airportLatLng);
-        this.eventListener = google.maps.event.addListener(this.marker, 'click', (
+        google.maps.event.addListener(this.marker, 'click', (
           function (marker, currentContent, currentInfoWindow) {
             return function () {
               currentInfoWindow.setContent(currentContent);
               currentInfoWindow.open(map, marker);
             };
-          })(this.marker, this.infoWindow.getContent(), infoWindow));
+          }
+        )(this.marker, this.infoWindow.getContent(), infoWindow));
+        this.markers.push(this.marker);
       }
-      this.markers.push(this.marker);
       console.log(this.markers);
       const bounds = new google.maps.LatLngBounds();
       const markerLatLng = new google.maps.LatLng({lat: this.airportLatLng.lat(), lng: this.airportLatLng.lng()});
       bounds.extend(markerLatLng);
       this.map.setCenter(this.center);
       this.map.setCenter(bounds.getCenter());
-      const _map = this.map;
-      google.maps.event.addListenerOnce(_map, 'bounds_changed', function(event) {
-        this.setZoom(_map.getZoom() - 1);
-
-        if (this.getZoom() > 3) {
-          this.setZoom(3);
-        }
-      });
+      this.zoom = 3;
       this.map.fitBounds(bounds);
+      google.maps.event.addListenerOnce(this.map, 'bounds_changed', (
+        function(_map, _zoom) {
+          return function () {
+            _map.setZoom(_zoom);
+          };
+        }
+      )(this.map, this.zoom));
     });
   }
 
