@@ -1,7 +1,7 @@
 import { Component, NgZone, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { ViewChild } from '@angular/core';
-import { LatLng, MapsAPILoader } from '@agm/core';
+import {LatLng, MapsAPILoader} from '@agm/core';
 import { GoogleMapsAPIWrapper } from '@agm/core/services';
 import { SearchFormComponent } from '../search-form/search-form.component';
 import {GoogleMap, InfoWindow, MapOptions, MapTypeId, Marker} from '@agm/core/services/google-maps-types';
@@ -34,21 +34,6 @@ export class AgmMapComponent implements OnInit {
   private markers: Array<Marker> = [];
   private latitude_infoWindow: number;
   private longitude_infoWindow: number;
-  /**
-   * If we wanted to update the default fitBounds,
-   * we could do so by changing the values of
-   * the 4 'readonly' variables below.
-   */
-  private readonly top_DEFAULT: 24.7433195; // north lat
-  private readonly bottom_DEFAULT: 49.3457868; // south lat
-  private readonly left_DEFAULT: -124.7844079; // west long
-  private readonly right_DEFAULT: -66.9513812; // east long
-  private bottom: number;
-  private left: number;
-  private top: number;
-  private right: number;
-  private northEastLatLngBounds: LatLng;
-  private southWestLatLngBounds: LatLng;
   private icaoConversion: string;
   private coordsArray: Array<object> = [];
   private coordsArray_lat: object;
@@ -159,12 +144,6 @@ export class AgmMapComponent implements OnInit {
         this.infoWindowArray.push(this.infoWindow);
       }
       this.API_Loader.load().then(() => {
-        this.top = this.top_DEFAULT;
-        this.right = this.right_DEFAULT;
-        this.bottom = this.bottom_DEFAULT;
-        this.left = this.left_DEFAULT;
-        this.northEastLatLngBounds = new google.maps.LatLng ({ lat: this.top, lng: this.right });
-        this.southWestLatLngBounds = new google.maps.LatLng ({ lat: this.bottom, lng: this.left });
         this.center = new google.maps.LatLng(39.8333333, -98.585522);
         this.mapOptions = {
           center: this.center,
@@ -228,7 +207,7 @@ export class AgmMapComponent implements OnInit {
   }
 
   clearMarkers() {
-    this.resetMarkers(null, null, null);
+    this.resetMarkers(this.map, null, null);
     this.markers = [];
   }
 
