@@ -1,12 +1,17 @@
 <div class="container-fluid">
+  <div class="container">
+    <div class="row justify-content-center">
+      <nav class="navbar navbar-dark bg-light">
+        <h2 class="padded-vert-1"><b>NOTAM Finder</b></h2>
+      </nav>
+    </div>
+  </div>
   <div class="container-fluid">
   <div class="input">
     <app-agm-map>
     </app-agm-map>
   </div>
     </div>
-    <h2 class="padded-vert-1">NOTAM Finder</h2>
-  <h5 class="padded-1">Start a search</h5>
 
   <form [formGroup]="searchForm" (ngSubmit)="submitSearch()">
 
@@ -60,29 +65,42 @@
 
 </div>
 
+<div class="row justify-content-center">
 <div *ngIf="displayMoreDetails">
+
     <div class="container">
-  <h3>More Details</h3>
+      <div class="container">
+        <div class="row justify-content-center">
+  <h3><b>Raw NOTAM Details</b></h3>
   <div class="padding-vert-2">
-      {{rawNotam}}
+    {{rawNotam}}
   </div>
-
-
-  <div class="row justify-content-center">
-      <div class="col-1">
-          <button (click)="closeDetails()" class="btn btn-outline-primary col-centered">Close</button>
+    </div>
       </div>
     </div>
 
-
-
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-1">
+        <button (click)="closeDetails()" class="btn btn-outline-primary"><b>Close</b></button>
+      </div>
+    </div>
+</div>
 
 </div>
 </div>
 
+<div class="row justify-content-center">
+<div class="accordion">
 <div *ngIf="displayResponse && !displayMoreDetails" class="container-fluid" >
 
-  <h3>Results</h3>
+  <div class="row padding-1">
+  <div class="container">
+    <div class="row justify-content-center">
+      <h3><b>Results</b></h3>
+    </div>
+  </div>
+  </div>
 
   <div class="row padding-1">
 
@@ -155,4 +173,5 @@
 
 
 </div>
-
+</div>
+</div>
