@@ -143,16 +143,18 @@ export class AgmMapComponent implements OnInit {
         this.airportLatLngArray.push(this.airportLatLng);
         this.infoWindowArray.push(this.infoWindow);
       }
-      this.API_Loader.load().then(() => {
-        this.center = new google.maps.LatLng(39.8333333, -98.585522);
-        this.mapOptions = {
-          center: this.center,
-          mapTypeId: google.maps.MapTypeId.SATELLITE,
-          zoom: 3
-        };
-        this.map = new google.maps.Map(document.getElementById('map'),
-          this.mapOptions);
-      });
+      this.center = new google.maps.LatLng(39.8283, -98.5795); // central us geo coords
+      this.zoom = 4;
+      this.mapOptions = {
+        center: this.center,
+        mapTypeId: google.maps.MapTypeId.SATELLITE,
+        zoom: this.zoom,
+        scrollwheel: true,
+        draggable: true,
+        zoomControl: true
+      };
+      this.map = new google.maps.Map(document.getElementById('map'),
+        this.mapOptions);
       this.setMarkers(this.map, this.airportLatLngArray, this.infoWindowArray);
     });
   }
