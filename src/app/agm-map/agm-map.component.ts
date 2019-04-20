@@ -66,9 +66,9 @@ export class AgmMapComponent implements OnInit {
           console.log(res);
           console.log(JSON.stringify(res));
           this.notams = res;
+          this.displayResponse = false;
           this.displayNotams(this.notams);
         });
-        this.displayResponse = true;
       }, err => {
         console.error(err);
       }
@@ -183,22 +183,20 @@ export class AgmMapComponent implements OnInit {
           }
         )(this.marker, this.infoWindow.getContent(), infoWindow));
         this.markers.push(this.marker);
+        console.log(this.markers);
+        const bounds = new google.maps.LatLngBounds();
+        bounds.extend(this.airportLatLng);
+        this.map.setCenter(bounds.getCenter());
+        this.zoom = 3;
+        this.map.fitBounds(bounds);
+        google.maps.event.addListenerOnce(this.map, 'bounds_changed', (
+          function (_map, _zoom) {
+            return function () {
+              _map.setZoom(_zoom);
+            };
+          }
+        )(this.map, this.zoom));
       }
-      console.log(this.markers);
-      const bounds = new google.maps.LatLngBounds();
-      const markerLatLng = new google.maps.LatLng({lat: this.airportLatLng.lat(), lng: this.airportLatLng.lng()});
-      bounds.extend(markerLatLng);
-      this.map.setCenter(this.center);
-      this.map.setCenter(bounds.getCenter());
-      this.zoom = 3;
-      this.map.fitBounds(bounds);
-      google.maps.event.addListenerOnce(this.map, 'bounds_changed', (
-        function(_map, _zoom) {
-          return function () {
-            _map.setZoom(_zoom);
-          };
-        }
-      )(this.map, this.zoom));
     });
   }
 
@@ -254,7 +252,7 @@ export class AgmMapComponent implements OnInit {
            console.log(JSON.stringify(res));
            this.notams = res;
            this.displayNotams(this.notams);
-           this.displayResponse = true;
+           this.displayResponse = false;
         }, err => {
            console.error(err);
         }

@@ -1,20 +1,15 @@
-<div class="container">
-
-<agm-map id="map"
-  [center]="center"
-  [zoom]="zoom"
-  [mapTypeId]="mapTypeId">
+<div class="sebm-google-map-container" id="map" style="width: 800px; height:500px;">
+<agm-map
+  [zoom]="zoom">
 
   <agm-marker *ngFor="let marker of markers;"
-    [latitude]="marker.lat"
-    [longitude]="marker.lng"
-    [map]="marker.map">
+    [latitude]="latitude"
+    [longitude]="longitude">
 
     <agm-info-window
       [maxWidth] = "maxWidth"
-      [content]="contentString"
-      [latitude]="marker.lat"
-      [longitude]="marker.lng">
+      [latitude]="latitude"
+      [longitude]="longitude">
       {{contentString}}
     </agm-info-window>
 
@@ -29,6 +24,7 @@
   </agm-circle>
 
 </agm-map>
+</div>
   <form [formGroup]="searchForm.searchForm" (ngSubmit)="setAirportCoordinates()">
 
     <div class="container">
@@ -44,5 +40,4 @@
 
     </div>
   </form>
-</div>
 
