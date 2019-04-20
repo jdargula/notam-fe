@@ -1,3 +1,4 @@
+<div class="row justify-content-center">
 <div class="sebm-google-map-container" id="map" style="width: 800px; height:500px;">
 <agm-map
   [zoom]="zoom">
@@ -24,7 +25,9 @@
   </agm-circle>
 
 </agm-map>
+  </div>
 </div>
+
   <form [formGroup]="searchForm.searchForm" (ngSubmit)="setAirportCoordinates()">
 
     <div class="container">

@@ -143,7 +143,8 @@ export class AgmMapComponent implements OnInit {
         this.airportLatLngArray.push(this.airportLatLng);
         this.infoWindowArray.push(this.infoWindow);
       }
-      this.center = new google.maps.LatLng(39.8283, -98.5795); // central us geo coords
+      // default map center: central us geo coords
+      this.center = new google.maps.LatLng(39.8283, -98.5795);
       this.zoom = 4;
       this.mapOptions = {
         center: this.center,
