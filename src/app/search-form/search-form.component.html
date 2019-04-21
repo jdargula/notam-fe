@@ -102,7 +102,40 @@
   </div>
   </div>
 
-  <div class="row padding-1">
+        <table class="table table-striped">
+            <thead>
+              <tr>
+                <th scope="col">Key</th>
+                <th scope="col">Airport</th>
+                <th scope="col">Type</th>
+                <th scope="col">Latitude</th>
+                <th scope="col">Longitude</th>
+                <th scope="col">Altitude</th>
+                <th scope="col">Runway</th>
+                <th scope="col">Effective Date</th>
+                <th scope="col">Created</th>
+                <th scope="col">Source</th>
+              </tr>
+            </thead>
+            <tbody *ngFor="let response of notams">
+              <tr>
+                <!-- <th scope="row">{{response.col1}}</th> -->
+                <td (click)="moreDetails(response.col1)" class="link">{{response.col1}}</td>
+                <td>{{response.col2}}</td>
+                <td>{{response.col3}}</td>
+                <td>{{response.col4}}</td>
+                <td>{{response.col5}}</td>
+                <td>{{response.col6}}</td>
+                <td>{{response.col7}}</td>
+                <td>{{response.col8}}</td>
+                <td>{{response.col9}}</td>
+                <td>{{response.col10}}</td>
+
+              </tr>
+
+            </tbody>
+          </table>
+  <!-- <div class="row padding-1">
 
     <div class="col-1 table-header">
       Key
@@ -169,7 +202,7 @@
       {{response.col10}}
     </div>
 
-  </div>
+  </div> -->
 
 
 </div>
