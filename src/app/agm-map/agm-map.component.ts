@@ -47,6 +47,8 @@ export class AgmMapComponent implements OnInit {
   private zoom: number;
   private mapTypeId: MapTypeId;
   private mapOptions: MapOptions;
+  private airportAndType: Array<any> = [];
+
   constructor(private API_Loader: MapsAPILoader,
               private zone: NgZone,
               private wrapper: GoogleMapsAPIWrapper,
@@ -57,18 +59,19 @@ export class AgmMapComponent implements OnInit {
     this.displayResponse = false;
     this.wrapper = wrapper;
   }
+
   @ViewChild('AgmMap') map: GoogleMap;
 
   ngOnInit() {
     this.API_Loader.load().then(() => {
-      this.http.post(this.apiRoot + '/GetAllNotams', 'IATA/ICAO').subscribe(
-        res => {
-          console.log(res);
-          console.log(JSON.stringify(res));
-          this.notams = res;
-          this.displayResponse = false;
-          this.displayNotams(this.notams);
-        });
+        this.http.post(this.apiRoot + '/GetAllNotams', 'IATA/ICAO').subscribe(
+          res => {
+            console.log(res);
+            console.log(JSON.stringify(res));
+            this.notams = res;
+            this.displayResponse = false;
+            this.displayNotams(this.notams);
+          });
       }, err => {
         console.error(err);
       }
@@ -99,6 +102,7 @@ export class AgmMapComponent implements OnInit {
         initAirportCode = notam.col2;
         airportCodesOnInit.push(initAirportCode);
         initNotamType = notam.col3;
+        console.log('initNotamType = ' + initNotamType);
         typeOfNotamOnInit.push(initNotamType);
       });
       this.airportCodesArrayOnInit = airportCodesOnInit;
@@ -249,17 +253,44 @@ export class AgmMapComponent implements OnInit {
        * Workaround discovered is the "icao" npm imported node package module. Although this limits functionality
        * of our app to some extent, the icao package works great for our needs at this time.
        */
-      this.http.post(this.apiRoot + '/AirportCodeMultiple', this.searchForm.searchForm.value.airport).subscribe(
-         res => {
-           console.log(res);
-           console.log(JSON.stringify(res));
-           this.notams = res;
-           this.displayNotams(this.notams);
-           this.displayResponse = false;
-        }, err => {
-           console.error(err);
-        }
-      );
+      console.log('airport = ' + this.searchForm.searchForm.value.airport);
+      console.log('type = ' + this.searchForm.searchForm.value.type);
+      if (this.searchForm.searchForm.value.type === 'RWY'
+        || this.searchForm.searchForm.value.type === 'OBST'
+        || this.searchForm.searchForm.value.type === 'TWY') {
+        this.requestNotamsPerICAOandType(this.searchForm.searchForm.value.airport, this.searchForm.searchForm.value.type);
+      } else {
+        this.http.post(this.apiRoot + '/AirportCodeMultiple', this.searchForm.searchForm.value.airport).subscribe(
+          res => {
+            console.log('res');
+            console.log(JSON.stringify(res));
+            this.notams = res;
+            this.displayNotams(this.notams);
+          }, err => {
+            console.error(err);
+          }
+        );
+      }
     });
   }
+
+  requestNotamsPerICAOandType(airportCode, type) {
+    this.airportCode = airportCode;
+    this.type = type;
+    this.airportAndType.push(this.airportCode);
+    this.airportAndType.push(this.type);
+    this.http.post(
+      this.apiRoot + '/populateMapWithNotamType', this.airportAndType).subscribe(
+      res => {
+        console.log('res=' + res);
+        console.log(JSON.stringify(res));
+        this.notams = res;
+        this.displayResponse = true;
+      }, err => {
+        console.error(err);
+      }
+    );
+  }
 }
+
+

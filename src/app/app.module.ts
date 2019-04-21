@@ -27,7 +27,8 @@ import {AgmMarkerComponent} from './agm-marker/agm-marker.component';
     MatCommonModule,
     NgbModule,
     BrowserModule,
-    AgmCoreModule.forRoot({apiKey: 'AIzaSyBksgsMa4KIvu7CCytKzmJ6wuKya7Gdnw0'}),
+    AgmCoreModule.forRoot(
+      {apiKey: 'AIzaSyD-UaGW8biRF7tL_noNyiCHYrxj9AwqQas'}),
     HttpClientModule,
     AppRoutingModule,
     FormsModule,

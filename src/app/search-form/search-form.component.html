@@ -40,8 +40,9 @@
           <select class="custom-select" id="inputGroupSelect01">
             <option selected>Choose...</option>
             <option value="1">Any</option>
-            <option value="2">Runway</option>
-            <option value="3">Obstruction</option>
+            <option value="2">RWY</option>
+            <option value="3">TWY</option>
+            <option value="4">OBST</option>
           </select>
         </div>
 
@@ -50,10 +51,10 @@
 
     <div class="row justify-content-center">
       <div class="col-1">
-        <div id ="nav">
+        <div id="nav">
 
         </div>
-        <div id = "aside"  style="padding:5px">
+        <div id="aside" style="padding:5px">
         </div>
 
       </div>
@@ -90,10 +91,9 @@
 </div>
 </div>
 
-<div class="row justify-content-center">
-<div class="accordion">
-<div *ngIf="displayResponse && !displayMoreDetails" class="container-fluid" >
-
+<div class="container-fluid">
+  <div class="row justify-content-center">
+  <div *ngIf="displayResponse && !displayMoreDetails" class="container-fluid">
   <div class="row padding-1">
   <div class="container">
     <div class="row justify-content-center">

@@ -16,6 +16,9 @@ export class SearchFormComponent implements OnInit {
   private rawNotam: Object;
   airportCodesArrayOnInit: any[];
   notams: any;
+  private airportCode: string;
+  private type: string;
+  private airportAndType: Array<any> = [];
   searchForm = new FormGroup({
     airport: new FormControl(''),
     type: new FormControl('')
@@ -55,30 +58,28 @@ export class SearchFormComponent implements OnInit {
         + this.searchForm.value.airport[2];
     }
     this.searchForm.value.airport = this.searchForm.value.airport.toUpperCase();
-     this.http.post(this.apiRoot + '/AirportCodeMultiple', this.searchForm.value.airport).subscribe(
-       res => {
-         console.log(res);
-         console.log(JSON.stringify(res));
-         this.notams = res;
-         this.displayResponse = true;
-       }, err => {
-         console.error(err);
-       }
-     );
-  }
-
-  moreDetails(key: string) {
-    this.http.post(this.apiRoot + '/RawNotamFromKey', key, { responseType: 'text'}).subscribe(
-      res => {
-        console.log(res.toString());
-        this.rawNotam = res.toString();
-        this.displayMoreDetails = true;
-      }, err => {
-        console.error(err);
-      }
-    );
-  }
-
+      this.http.post(this.apiRoot + '/AirportCodeMultiple', this.searchForm.value.airport).subscribe(
+        res => {
+          console.log(res);
+          console.log(JSON.stringify(res));
+          this.notams = res;
+          this.displayResponse = true;
+        }, err => {
+          console.error(err);
+        }
+      );
+    }
+    moreDetails(key: string) {
+      this.http.post(this.apiRoot + '/RawNotamFromKey', key, {responseType: 'text'}).subscribe(
+        res => {
+          console.log(res.toString());
+          this.rawNotam = res.toString();
+          this.displayMoreDetails = true;
+        }, err => {
+          console.error(err);
+        }
+      );
+    }
   closeDetails() {
     this.displayMoreDetails = false;
   }
