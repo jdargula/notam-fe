@@ -1,6 +1,7 @@
 import { FormGroup, FormControl } from '@angular/forms';
 import {Component, OnInit} from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { jsonpCallbackContext } from '@angular/common/http/src/module';
 
 @Component({
   selector: 'app-search-form',
@@ -32,22 +33,44 @@ export class SearchFormComponent implements OnInit {
   ngOnInit() {
     this.http.post(this.apiRoot + '/GetAllNotams', 'IATA/ICAO').subscribe(
       res => {
-        console.log('res');
-        console.log(JSON.stringify(res));
+
+
         this.notams = res;
-        const airportCodesOnInit = [];
-        console.log(this.notams);
-        this.notams.forEach(function(notam) {
-          console.log(notam.col2);
-          airportCodesOnInit.push(notam.col2);
-        });
-        this.airportCodesArrayOnInit = airportCodesOnInit;
-        console.log(this.airportCodesArrayOnInit);
+        // const airportCodesOnInit = [];
+
+        // this.notams.forEach(function(notam) {
+
+        //   airportCodesOnInit.push(notam.col2);
+        // });
+        // this.airportCodesArrayOnInit = airportCodesOnInit;
+        
+    this.clean()
+
         this.displayResponse = true;
       }, err => {
         console.error(err);
       }
+      
     );
+
+  }
+
+  clean() {
+    for (let i of this.notams) {
+      if (i.col4 == "" || i.col4 == null) {
+        i.col4 = "N/A"
+      }
+      if (i.col5 == "" || i.col5 == null) {
+        i.col5 = "N/A"
+      }
+      if (i.col6 == "" || i.col6 == null) {
+        i.col6 = "N/A"
+      }
+      if (i.col7 == "" || i.col7 == null) {
+        i.col7 = "N/A"
+      }
+    }
+    console.log(this.notams)
   }
 
   submitSearch() {
@@ -60,9 +83,9 @@ export class SearchFormComponent implements OnInit {
     this.searchForm.value.airport = this.searchForm.value.airport.toUpperCase();
       this.http.post(this.apiRoot + '/AirportCodeMultiple', this.searchForm.value.airport).subscribe(
         res => {
-          console.log(res);
-          console.log(JSON.stringify(res));
           this.notams = res;
+          this.clean()
+
           this.displayResponse = true;
         }, err => {
           console.error(err);
@@ -72,7 +95,6 @@ export class SearchFormComponent implements OnInit {
     moreDetails(key: string) {
       this.http.post(this.apiRoot + '/RawNotamFromKey', key, {responseType: 'text'}).subscribe(
         res => {
-          console.log(res.toString());
           this.rawNotam = res.toString();
           this.displayMoreDetails = true;
         }, err => {

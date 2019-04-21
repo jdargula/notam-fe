@@ -73,8 +73,8 @@ export class MapComponent implements OnInit {
   showMap() {
     this.http.post(this.apiRoot + '/LongandLatfromCoords', 'ATL').subscribe(
       res => {
-        console.log('res');
-        console.log(JSON.stringify(res));
+        // console.log('res');
+        // console.log(JSON.stringify(res));
         this.notams = res;
         this.location.lat = this.notams[0];
         this.location.lng = this.notams[1];

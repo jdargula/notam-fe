@@ -13,7 +13,7 @@
   </div>
     </div>
 
-  <form [formGroup]="searchForm" (ngSubmit)="submitSearch()">
+  <form [formGroup]="searchForm" (ngSubmit)="submitSearch()"></form>
 
     <div class="container">
 
@@ -48,6 +48,7 @@
 
       </div>
     </div>
+      <form [formGroup]="searchForm" (ngSubmit)="submitSearch()"></form>
 
     <div class="row justify-content-center">
       <div class="col-1">
@@ -107,8 +108,7 @@
                 <th scope="col">Key</th>
                 <th scope="col">Airport</th>
                 <th scope="col">Type</th>
-                <th scope="col">Latitude</th>
-                <th scope="col">Longitude</th>
+                <th scope="col">Coordinates</th>
                 <th scope="col">Altitude</th>
                 <th scope="col">Runway</th>
                 <th scope="col">Effective Date</th>

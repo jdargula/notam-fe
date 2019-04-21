@@ -66,8 +66,8 @@ export class AgmMapComponent implements OnInit {
     this.API_Loader.load().then(() => {
         this.http.post(this.apiRoot + '/GetAllNotams', 'IATA/ICAO').subscribe(
           res => {
-            console.log(res);
-            console.log(JSON.stringify(res));
+            // console.log(res);
+            // console.log(JSON.stringify(res));
             this.notams = res;
             this.displayResponse = false;
             this.displayNotams(this.notams);
@@ -86,7 +86,7 @@ export class AgmMapComponent implements OnInit {
       const typeOfNotamOnInit = [];
       let initAirportCode = '';
       let initNotamType = '';
-      console.log(this.searchForm.notams);
+      // console.log(this.searchForm.notams);
       /**
        * ***Note: The fact that the frontend client makes the request by http to post all of the data
        * for rendering at runtime, storing the data locally in multiple arrays, would not be considered
@@ -102,13 +102,13 @@ export class AgmMapComponent implements OnInit {
         initAirportCode = notam.col2;
         airportCodesOnInit.push(initAirportCode);
         initNotamType = notam.col3;
-        console.log('initNotamType = ' + initNotamType);
+        // console.log('initNotamType = ' + initNotamType);
         typeOfNotamOnInit.push(initNotamType);
       });
       this.airportCodesArrayOnInit = airportCodesOnInit;
-      console.log(this.airportCodesArrayOnInit);
+      // console.log(this.airportCodesArrayOnInit);
       this.typeOfNotamArrayOnInit = typeOfNotamOnInit;
-      console.log(this.typeOfNotamArrayOnInit);
+      // console.log(this.typeOfNotamArrayOnInit);
       while (this.airportCodesArrayOnInit.length > 0) {
         this.airportCode = this.airportCodesArrayOnInit.pop();
         if (this.airportCode === '!FDC') {
@@ -123,9 +123,9 @@ export class AgmMapComponent implements OnInit {
         this.coordsArray_lat = this.coordsArray[0];
         this.coordsArray_lng = this.coordsArray[1];
         this.airportCoords = {lat: this.coordsArray_lat, lng: this.coordsArray_lng};
-        console.log(this.airportCoords);
+        // console.log(this.airportCoords);
         this.m = JSON.parse(JSON.stringify(this.airportCoords));
-        console.log(this.m);
+        // console.log(this.m);
         this.latitude = parseFloat(this.m.lat);
         this.longitude = parseFloat(this.m.lng);
         this.latitude_infoWindow = Math.round(parseFloat(this.m.lat) * 10000) / 10000;
@@ -170,10 +170,10 @@ export class AgmMapComponent implements OnInit {
       this.infoWindowArray = infoWindowArray;
       const infoWindow = new google.maps.InfoWindow();
       while (this.airportLatLngArray.length > 0) {
-        console.log('this.airportLatLngArray: ' + this.airportLatLngArray);
+        // console.log('this.airportLatLngArray: ' + this.airportLatLngArray);
         this.airportLatLng = this.airportLatLngArray.pop();
-        console.log('this.airportLatLng = ' + this.airportLatLng);
-        console.log('this.airportLatLngArray = ' + this.airportLatLngArray);
+        // console.log('this.airportLatLng = ' + this.airportLatLng);
+        // console.log('this.airportLatLngArray = ' + this.airportLatLngArray);
         this.infoWindow = this.infoWindowArray.pop();
         this.marker = new google.maps.Marker({
           map: this.map,
@@ -190,7 +190,7 @@ export class AgmMapComponent implements OnInit {
           }
         )(this.marker, this.infoWindow.getContent(), infoWindow));
         this.markers.push(this.marker);
-        console.log(this.markers);
+        // console.log(this.markers);
         const bounds = new google.maps.LatLngBounds();
         bounds.extend(this.airportLatLng);
         this.map.setCenter(bounds.getCenter());
@@ -253,8 +253,8 @@ export class AgmMapComponent implements OnInit {
        * Workaround discovered is the "icao" npm imported node package module. Although this limits functionality
        * of our app to some extent, the icao package works great for our needs at this time.
        */
-      console.log('airport = ' + this.searchForm.searchForm.value.airport);
-      console.log('type = ' + this.searchForm.searchForm.value.type);
+      // console.log('airport = ' + this.searchForm.searchForm.value.airport);
+      // console.log('type = ' + this.searchForm.searchForm.value.type);
       if (this.searchForm.searchForm.value.type === 'RWY'
         || this.searchForm.searchForm.value.type === 'OBST'
         || this.searchForm.searchForm.value.type === 'TWY') {
@@ -262,8 +262,8 @@ export class AgmMapComponent implements OnInit {
       } else {
         this.http.post(this.apiRoot + '/AirportCodeMultiple', this.searchForm.searchForm.value.airport).subscribe(
           res => {
-            console.log('res');
-            console.log(JSON.stringify(res));
+            // console.log('res');
+            // console.log(JSON.stringify(res));
             this.notams = res;
             this.displayNotams(this.notams);
           }, err => {
@@ -282,8 +282,8 @@ export class AgmMapComponent implements OnInit {
     this.http.post(
       this.apiRoot + '/populateMapWithNotamType', this.airportAndType).subscribe(
       res => {
-        console.log('res=' + res);
-        console.log(JSON.stringify(res));
+        // console.log('res=' + res);
+        // console.log(JSON.stringify(res));
         this.notams = res;
         this.displayResponse = true;
       }, err => {
