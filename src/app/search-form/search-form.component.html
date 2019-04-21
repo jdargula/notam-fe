@@ -101,7 +101,6 @@
     </div>
   </div>
   </div>
-
         <table class="table table-striped">
             <thead>
               <tr>
@@ -117,8 +116,8 @@
                 <th scope="col">Source</th>
               </tr>
             </thead>
-            <tbody *ngFor="let response of notams">
-              <tr>
+            <tbody >
+              <tr *ngFor="let response of notams">
                 <!-- <th scope="row">{{response.col1}}</th> -->
                 <td (click)="moreDetails(response.col1)" class="link">{{response.col1}}</td>
                 <td>{{response.col2}}</td>
