@@ -242,55 +242,98 @@ export class AgmMapComponent implements OnInit {
       this.searchForm.searchForm.value.airport = this.searchForm.searchForm.value.airport.toUpperCase();
       this.airportCode = this.searchForm.searchForm.value.airport;
       this.type = this.searchForm.searchForm.value.type;
-      /**
-       * marker colors will be coded according to type.Two additional
-       * types will populate the map when user conducts a query search:
-       * (1) "no notams found," and (2) Type not specified by user.
-       */
       this.icaoConversion = this.icaoConversion.toUpperCase();
-      /**
-       * Info from http post call below is not being used at this time, due to current formatting of lat and lng values in our db.
-       * Workaround discovered is the "icao" npm imported node package module. Although this limits functionality
-       * of our app to some extent, the icao package works great for our needs at this time.
-       */
-      console.log('airport = ' + this.searchForm.searchForm.value.airport);
-      console.log('type = ' + this.searchForm.searchForm.value.type);
-      if (this.searchForm.searchForm.value.type === 'RWY'
-        || this.searchForm.searchForm.value.type === 'OBST'
-        || this.searchForm.searchForm.value.type === 'TWY') {
-        this.requestNotamsPerICAOandType(this.searchForm.searchForm.value.airport, this.searchForm.searchForm.value.type);
-      } else {
-        this.http.post(this.apiRoot + '/AirportCodeMultiple', this.searchForm.searchForm.value.airport).subscribe(
-          res => {
-            console.log('res');
-            console.log(JSON.stringify(res));
-            this.notams = res;
-            this.displayNotams(this.notams);
-          }, err => {
-            console.error(err);
-          }
-        );
-      }
+      this.http.post(this.apiRoot + '/populateMapByAirportCode', this.searchForm.searchForm.value.airport).subscribe(
+        res => {
+          console.log('res');
+          console.log(JSON.stringify(res));
+          this.notams = res;
+          console.log(this.notams);
+          this.displayNotams(this.notams);
+        }, err => {
+          console.error(err);
+        }
+      );
     });
   }
 
-  requestNotamsPerICAOandType(airportCode, type) {
-    this.airportCode = airportCode;
-    this.type = type;
-    this.airportAndType.push(this.airportCode);
-    this.airportAndType.push(this.type);
+  searchByKey() {
     this.http.post(
-      this.apiRoot + '/populateMapWithNotamType', this.airportAndType).subscribe(
+      this.apiRoot + '/populateMapByKey', this.searchForm.searchForm.value.key).subscribe(
       res => {
-        console.log('res=' + res);
+        console.log('res');
+        console.log(res);
         console.log(JSON.stringify(res));
         this.notams = res;
-        this.displayResponse = true;
+        console.log(this.notams);
+        this.displayNotams(this.notams);
+      }, err => {
+        console.error(err);
+      }
+    );
+  }
+
+  searchByType() {
+    this.http.post(
+      this.apiRoot + '/populateMapByType', this.searchForm.searchForm.value.type).subscribe(
+      res => {
+        console.log('res');
+        console.log(res);
+        console.log(JSON.stringify(res));
+        this.notams = res;
+        console.log(this.notams);
+        this.displayNotams(this.notams);
+      }, err => {
+        console.error(err);
+      }
+    );
+  }
+
+  searchByEffectiveDate() {
+    this.http.post(
+      this.apiRoot + '/populateMapByEffectiveDate', this.searchForm.searchForm.value.effectiveDate).subscribe(
+      res => {
+        console.log('res');
+        console.log(res);
+        console.log(JSON.stringify(res));
+        this.notams = res;
+        console.log(this.notams);
+        this.displayNotams(this.notams);
+      }, err => {
+        console.error(err);
+      }
+    );
+  }
+
+  searchByCreatedDate() {
+    this.http.post(
+      this.apiRoot + '/populateMapByCreatedDate', this.searchForm.searchForm.value.createdDate).subscribe(
+      res => {
+        console.log('res');
+        console.log(res);
+        console.log(JSON.stringify(res));
+        this.notams = res;
+        console.log(this.notams);
+        this.displayNotams(this.notams);
+      }, err => {
+        console.error(err);
+      }
+    );
+  }
+
+  searchBySource() {
+    this.http.post(
+      this.apiRoot + '/populateMapBySource', this.searchForm.searchForm.value.source).subscribe(
+      res => {
+        console.log('res');
+        console.log(res);
+        console.log(JSON.stringify(res));
+        this.notams = res;
+        console.log(this.notams);
+        this.displayNotams(this.notams);
       }, err => {
         console.error(err);
       }
     );
   }
 }
-
-

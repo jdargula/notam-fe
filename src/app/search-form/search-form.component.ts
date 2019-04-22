@@ -20,8 +20,16 @@ export class SearchFormComponent implements OnInit {
   private type: string;
   private airportAndType: Array<any> = [];
   searchForm = new FormGroup({
+    key: new FormControl(''),
     airport: new FormControl(''),
-    type: new FormControl('')
+    type: new FormControl(''),
+    latitude: new FormControl(''),
+    longitude: new FormControl(''),
+    altitude: new FormControl(''),
+    runway: new FormControl(''),
+    effectiveDate: new FormControl(''),
+    createdDate: new FormControl(''),
+    source: new FormControl('')
   });
   constructor(private http: HttpClient) {
     this.apiRoot = 'http://localhost:8080';
@@ -58,28 +66,95 @@ export class SearchFormComponent implements OnInit {
         + this.searchForm.value.airport[2];
     }
     this.searchForm.value.airport = this.searchForm.value.airport.toUpperCase();
-      this.http.post(this.apiRoot + '/AirportCodeMultiple', this.searchForm.value.airport).subscribe(
-        res => {
-          console.log(res);
-          console.log(JSON.stringify(res));
-          this.notams = res;
-          this.displayResponse = true;
-        }, err => {
-          console.error(err);
-        }
-      );
-    }
-    moreDetails(key: string) {
-      this.http.post(this.apiRoot + '/RawNotamFromKey', key, {responseType: 'text'}).subscribe(
-        res => {
-          console.log(res.toString());
-          this.rawNotam = res.toString();
-          this.displayMoreDetails = true;
-        }, err => {
-          console.error(err);
-        }
-      );
-    }
+    this.http.post(this.apiRoot + '/populateMapByAirportCode', this.searchForm.value.airport).subscribe(
+      res => {
+        console.log(res);
+        console.log(JSON.stringify(res));
+        this.notams = res;
+        this.displayResponse = true;
+      }, err => {
+        console.error(err);
+      }
+    );
+  }
+
+  submitSearchByKey() {
+    this.http.post(this.apiRoot + '/populateMapByKey', this.searchForm.value.key).subscribe(
+    res => {
+       console.log(res);
+       console.log(JSON.stringify(res));
+      this.notams = res;
+      this.displayResponse = true;
+      }, err => {
+        console.error(err);
+      }
+    );
+  }
+
+  submitSearchByType() {
+    this.http.post(this.apiRoot + '/populateMapByType', this.searchForm.value.type).subscribe(
+      res => {
+        console.log(res);
+        console.log(JSON.stringify(res));
+        this.notams = res;
+        this.displayResponse = true;
+      }, err => {
+        console.error(err);
+      }
+    );
+  }
+
+  submitSearchByEffectiveDate() {
+    this.http.post(this.apiRoot + '/populateMapByEffectiveDate', this.searchForm.value.effectiveDate).subscribe(
+      res => {
+        console.log(res);
+        console.log(JSON.stringify(res));
+        this.notams = res;
+        this.displayResponse = true;
+      }, err => {
+        console.error(err);
+      }
+    );
+  }
+
+  submitSearchByCreatedDate() {
+    this.http.post(this.apiRoot + '/populateMapByCreatedDate', this.searchForm.value.createdDate).subscribe(
+      res => {
+        console.log(res);
+        console.log(JSON.stringify(res));
+        this.notams = res;
+        this.displayResponse = true;
+      }, err => {
+        console.error(err);
+      }
+    );
+  }
+
+  submitSearchBySource() {
+    this.http.post(this.apiRoot + '/populateMapBySource', this.searchForm.value.source).subscribe(
+      res => {
+        console.log(res);
+        console.log(JSON.stringify(res));
+        this.notams = res;
+        this.displayResponse = true;
+      }, err => {
+        console.error(err);
+      }
+    );
+  }
+
+  moreDetails(key: string) {
+    this.http.post(this.apiRoot + '/RawNotamFromKey', key, {responseType: 'text'}).subscribe(
+      res => {
+        console.log(res.toString());
+        this.rawNotam = res.toString();
+        this.displayMoreDetails = true;
+      }, err => {
+        console.error(err);
+      }
+    );
+  }
+
   closeDetails() {
     this.displayMoreDetails = false;
   }

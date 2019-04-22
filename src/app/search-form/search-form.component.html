@@ -1,177 +1,199 @@
 <div class="container-fluid">
-  <div class="container">
-    <div class="row justify-content-center">
-      <nav class="navbar navbar-dark bg-light">
-        <h2 class="padded-vert-1"><b>NOTAM Finder</b></h2>
-      </nav>
-    </div>
+<div class="container">
+  <div class="row justify-content-center">
+    <nav class="navbar navbar-dark bg-light">
+      <h2 class="padded-vert-1"><b>NOTAM Finder</b></h2>
+    </nav>
   </div>
-  <div class="container-fluid">
+</div>
+<div class="container-fluid">
   <div class="input">
     <app-agm-map>
     </app-agm-map>
   </div>
-    </div>
+</div>
 
-  <form [formGroup]="searchForm" (ngSubmit)="submitSearch()">
-
-    <div class="container">
-
-    <div class="row">
+<form [formGroup]="searchForm" (ngSubmit)="submitSearch()">
+  <div class="container">
+    <div class="row align-items-lg-center">
       <div class="col">
+        <div class="input-group mb-3">
+          <div class="input-group-prepend">
+            <div class="input-group-text" id="inputGroup-sizing-default1"><Strong>Enter NOTAM Key</Strong></div>
+          </div>
+          <input type="text" formControlName="key" class="form-control" aria-label="Key"
+                 placeholder="" aria-describedby="inputGroup-sizing-default1">
+        </div>
 
         <div class="input-group mb-3">
           <div class="input-group-prepend">
-            <span class="input-group-text" id="inputGroup-sizing-default">Enter Airport Code</span>
+            <div class="input-group-text" id="inputGroup-sizing-default2"><Strong>Enter Airport Code</Strong></div>
           </div>
           <input type="text" formControlName="airport" class="form-control" aria-label="Airport"
-                 placeholder="IATA/ICAO" aria-describedby="inputGroup-sizing-default">
+                 placeholder="" aria-describedby="inputGroup-sizing-default2">
         </div>
-
-      </div>
-
-      <div class="col">
-
 
         <div class="input-group mb-3">
           <div class="input-group-prepend">
-            <label class="input-group-text" for="inputGroupSelect01">Select Type</label>
+            <div class="input-group-text" id="inputGroup-sizing-default3"><Strong>Enter Type of NOTAM</Strong></div>
           </div>
-          <select class="custom-select" id="inputGroupSelect01">
-            <option selected>Choose...</option>
-            <option value="1">Any</option>
-            <option value="2">RWY</option>
-            <option value="3">TWY</option>
-            <option value="4">OBST</option>
-          </select>
+          <input type="text" formControlName="type" class="form-control" aria-label="Type"
+                 placeholder="" aria-describedby="inputGroup-sizing-default3">
         </div>
 
-      </div>
-    </div>
+        <div class="input-group mb-3">
+          <div class="input-group-prepend">
+            <div class="input-group-text" id="inputGroup-sizing-default7"><Strong>Enter Runway</Strong></div>
+          </div>
+          <input type="text" formControlName="runway" class="form-control" aria-label="Runway"
+                 placeholder="" aria-describedby="inputGroup-sizing-default7">
+        </div>
 
+        <div class="input-group mb-3">
+          <div class="input-group-prepend">
+            <div class="input-group-text" id="inputGroup-sizing-default8"><Strong>Enter Effective Date</Strong></div>
+          </div>
+          <input type="text" formControlName="effectiveDate" class="form-control" aria-label="Effective Date/Time"
+                 placeholder="" aria-describedby="inputGroup-sizing-default8">
+        </div>
+
+        <div class="input-group mb-3">
+          <div class="input-group-prepend">
+            <div class="input-group-text" id="inputGroup-sizing-default9"><Strong>Enter Created Date</Strong></div>
+          </div>
+          <input type="text" formControlName="createdDate" class="form-control" aria-label="Created Date"
+                 placeholder="" aria-describedby="inputGroup-sizing-default9">
+        </div>
+
+        <div class="input-group mb-3">
+          <div class="input-group-prepend">
+            <div class="input-group-text" id="inputGroup-sizing-default10"><Strong>Enter Source</Strong></div>
+          </div>
+          <input type="text" formControlName="source" class="form-control" aria-label="Source"
+                 placeholder="" aria-describedby="inputGroup-sizing-default10">
+        </div>
+      </div>
+
+
+    </div>
     <div class="row justify-content-center">
       <div class="col-1">
         <div id="nav">
-
         </div>
         <div id="aside" style="padding:5px">
         </div>
-
       </div>
     </div>
-
   </div>
 
-  </form>
-
-</div>
+</form>
 
 <div class="row justify-content-center">
-<div *ngIf="displayMoreDetails">
-
+  <div *ngIf="displayMoreDetails">
     <div class="container">
       <div class="container">
         <div class="row justify-content-center">
-  <h3><b>Raw NOTAM Details</b></h3>
-  <div class="padding-vert-2">
-    {{rawNotam}}
+          <h3><b>Raw NOTAM Details</b></h3>
+          <div class="padding-vert-2">
+            {{rawNotam}}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="container">
+      <div class="row justify-content-center">
+        <div class="col-1">
+          <button (click)="closeDetails()" class="btn btn-outline-primary"><b>Close</b></button>
+        </div>
+      </div>
+    </div>
+
   </div>
-    </div>
-      </div>
-    </div>
-
-  <div class="container">
-    <div class="row justify-content-center">
-      <div class="col-1">
-        <button (click)="closeDetails()" class="btn btn-outline-primary"><b>Close</b></button>
-      </div>
-    </div>
-</div>
-
-</div>
 </div>
 
 <div class="container-fluid">
   <div class="row justify-content-center">
-  <div *ngIf="displayResponse && !displayMoreDetails" class="container-fluid">
-  <div class="row padding-1">
-  <div class="container">
-    <div class="row justify-content-center">
-      <h3><b>Results</b></h3>
+    <div *ngIf="displayResponse && !displayMoreDetails" class="container-fluid">
+      <div class="row padding-1">
+        <div class="container">
+          <div class="row justify-content-center">
+            <h3><b>Results</b></h3>
+          </div>
+        </div>
+      </div>
+
+      <div class="row padding-1">
+
+        <div class="col-1 table-header">
+          Key
+        </div>
+        <div class="col-1 table-header">
+          Airport
+        </div>
+        <div class="col-3 table-header">
+          Type
+        </div>
+        <div class="col-1 table-header">
+          Latitude
+        </div>
+        <div class="col-1 table-header">
+          Longitude
+        </div>
+        <div class="col-1 table-header">
+          Altitude
+        </div>
+        <div class="col-1 table-header">
+          Runway
+        </div>
+        <div class="col-1 table-header">
+          Effective Date
+        </div>
+        <div class="col-1 table-header">
+          Created
+        </div>
+        <div class="col-1 table-header">
+          Source
+        </div>
+
+      </div>
+
+      <div class="row padded-1" *ngFor="let response of notams">
+        <div (click)="moreDetails(response.col1)" class="col-1 link">
+          {{response.col1}}
+        </div>
+        <div class="col-1">
+          {{response.col2}}
+        </div>
+        <div class="col-3">
+          {{response.col3}}
+        </div>
+        <div class="col-2">
+          {{response.col4}}
+        </div>
+        <div class="col-1">
+          {{response.col5}}
+        </div>
+        <div class="col-1">
+          {{response.col6}}
+        </div>
+        <div class="col-1">
+          {{response.col7}}
+        </div>
+        <div class="col-1">
+          {{response.col8}}
+        </div>
+        <div class="col-1">
+          {{response.col9}}
+        </div>
+        <div class="col-1">
+          {{response.col10}}
+        </div>
+
+      </div>
+
+
     </div>
   </div>
-  </div>
-
-  <div class="row padding-1">
-
-    <div class="col-1 table-header">
-      Key
-    </div>
-    <div class="col-1 table-header">
-      Airport
-    </div>
-    <div class="col-3 table-header">
-      Type
-    </div>
-    <div class="col-1 table-header">
-      Latitude
-    </div>
-    <div class="col-1 table-header">
-      Longitude
-    </div>
-    <div class="col-1 table-header">
-      Altitude
-    </div>
-    <div class="col-1 table-header">
-      Runway
-    </div>
-    <div class="col-1 table-header">
-      Effective Date
-    </div>
-    <div class="col-1 table-header">
-      Created
-    </div>
-    <div class="col-1 table-header">
-      Source
-    </div>
-
-  </div>
-
-  <div class="row padded-1" *ngFor="let response of notams">
-    <div (click)="moreDetails(response.col1)" class="col-1 link">
-      {{response.col1}}
-    </div>
-    <div class="col-1">
-      {{response.col2}}
-    </div>
-    <div class="col-3">
-      {{response.col3}}
-    </div>
-    <div class="col-2">
-      {{response.col4}}
-    </div>
-    <div class="col-1">
-      {{response.col5}}
-    </div>
-    <div class="col-1">
-      {{response.col6}}
-    </div>
-    <div class="col-1">
-      {{response.col7}}
-    </div>
-    <div class="col-1">
-      {{response.col8}}
-    </div>
-    <div class="col-1">
-      {{response.col9}}
-    </div>
-    <div class="col-1">
-      {{response.col10}}
-    </div>
-
-  </div>
-
-
-</div>
 </div>
 </div>

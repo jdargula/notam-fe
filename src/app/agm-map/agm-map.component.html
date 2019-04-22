@@ -34,9 +34,44 @@
       <div class="row justify-content-center">
           <div id ="nav">
             <button
-              (click)="setAirportCoordinates(); searchForm.submitSearch()">
-              Submit Search
+              (click)="searchByKey(); searchForm.submitSearchByKey()">
+              Search by Key
             </button>
+
+        </div>
+        <div id ="nav2">
+          <button
+            (click)="setAirportCoordinates(); searchForm.submitSearch()">
+            Search by Airport
+          </button>
+
+        </div>
+        <div id ="nav4">
+          <button
+            (click)="searchByType()">
+            Search by Type
+          </button>
+
+        </div>
+        <div id ="nav5">
+          <button
+            (click)="searchByEffectiveDate(); searchForm.submitSearchByEffectiveDate()">
+            Search by Effective Date
+          </button>
+
+        </div>
+        <div id ="nav6">
+          <button
+            (click)="searchByCreatedDate(); searchForm.submitSearchByCreatedDate()">
+            Search by Create Date
+          </button>
+
+        </div>
+        <div id ="nav7">
+          <button
+            (click)="searchBySource(); searchForm.submitSearchBySource()">
+            Search by Source
+          </button>
 
         </div>
       </div>
