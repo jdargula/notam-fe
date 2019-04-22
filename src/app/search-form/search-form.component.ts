@@ -92,7 +92,9 @@ export class SearchFormComponent implements OnInit {
   }
 
   submitSearchByType() {
-    this.http.post(this.apiRoot + '/populateMapByType', this.searchForm.value.type).subscribe(
+    let capType = this.searchForm.value.type;
+    capType = capType.toUpperCase();
+    this.http.post(this.apiRoot + '/populateMapByType', capType).subscribe(
       res => {
         console.log(res);
         console.log(JSON.stringify(res));

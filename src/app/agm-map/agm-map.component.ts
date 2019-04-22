@@ -235,6 +235,12 @@ export class AgmMapComponent implements OnInit {
           + this.searchForm.searchForm.value.airport[1]
           + this.searchForm.searchForm.value.airport[2];
       }
+      if (this.searchForm.searchForm.value.airport.length === 4) {
+        this.searchForm.searchForm.value.airport = '!'
+          + this.searchForm.searchForm.value.airport[1]
+          + this.searchForm.searchForm.value.airport[2]
+          + this.searchForm.searchForm.value.airport[3];
+      }
       this.icaoConversion = 'K'
         + this.searchForm.searchForm.value.airport[1]
         + this.searchForm.searchForm.value.airport[2]
@@ -274,8 +280,10 @@ export class AgmMapComponent implements OnInit {
   }
 
   searchByType() {
+    let capType = this.searchForm.searchForm.value.type;
+    capType = capType.toUpperCase();
     this.http.post(
-      this.apiRoot + '/populateMapByType', this.searchForm.searchForm.value.type).subscribe(
+      this.apiRoot + '/populateMapByType', capType).subscribe(
       res => {
         console.log('res');
         console.log(res);
