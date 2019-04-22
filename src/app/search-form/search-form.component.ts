@@ -58,16 +58,16 @@ export class SearchFormComponent implements OnInit {
   clean() {
     for (let i of this.notams) {
       if (i.col4 == "" || i.col4 == null) {
-        i.col4 = "N/A"
+        i.col4 = "-"
       }
       if (i.col5 == "" || i.col5 == null) {
-        i.col5 = "N/A"
+        i.col5 = "-"
       }
       if (i.col6 == "" || i.col6 == null) {
-        i.col6 = "N/A"
+        i.col6 = "-"
       }
       if (i.col7 == "" || i.col7 == null) {
-        i.col7 = "N/A"
+        i.col7 = "-"
       }
     }
     console.log(this.notams)
