@@ -15,9 +15,9 @@
 
 <form [formGroup]="searchForm" (ngSubmit)="submitSearch()">
   <div class="container">
-    <div class="row align-items-lg-center">
+    <div class="row align-items-sm-center">
       <div class="col">
-        <div class="input-group mb-3">
+        <div class="input-group mb-0">
           <div class="input-group-prepend">
             <div class="input-group-text" id="inputGroup-sizing-default1"><Strong>Enter NOTAM Key</Strong></div>
           </div>
@@ -25,7 +25,7 @@
                  placeholder="" aria-describedby="inputGroup-sizing-default1">
         </div>
 
-        <div class="input-group mb-3">
+        <div class="input-group mb-0">
           <div class="input-group-prepend">
             <div class="input-group-text" id="inputGroup-sizing-default2"><Strong>Enter Airport Code</Strong></div>
           </div>
@@ -33,48 +33,14 @@
                  placeholder="" aria-describedby="inputGroup-sizing-default2">
         </div>
 
-        <div class="input-group mb-3">
+        <div class="input-group mb-0">
           <div class="input-group-prepend">
             <div class="input-group-text" id="inputGroup-sizing-default3"><Strong>Enter Type of NOTAM</Strong></div>
           </div>
           <input type="text" formControlName="type" class="form-control" aria-label="Type"
                  placeholder="" aria-describedby="inputGroup-sizing-default3">
         </div>
-
-        <div class="input-group mb-3">
-          <div class="input-group-prepend">
-            <div class="input-group-text" id="inputGroup-sizing-default7"><Strong>Enter Runway</Strong></div>
-          </div>
-          <input type="text" formControlName="runway" class="form-control" aria-label="Runway"
-                 placeholder="" aria-describedby="inputGroup-sizing-default7">
-        </div>
-
-        <div class="input-group mb-3">
-          <div class="input-group-prepend">
-            <div class="input-group-text" id="inputGroup-sizing-default8"><Strong>Enter Effective Date</Strong></div>
-          </div>
-          <input type="text" formControlName="effectiveDate" class="form-control" aria-label="Effective Date/Time"
-                 placeholder="" aria-describedby="inputGroup-sizing-default8">
-        </div>
-
-        <div class="input-group mb-3">
-          <div class="input-group-prepend">
-            <div class="input-group-text" id="inputGroup-sizing-default9"><Strong>Enter Created Date</Strong></div>
-          </div>
-          <input type="text" formControlName="createdDate" class="form-control" aria-label="Created Date"
-                 placeholder="" aria-describedby="inputGroup-sizing-default9">
-        </div>
-
-        <div class="input-group mb-3">
-          <div class="input-group-prepend">
-            <div class="input-group-text" id="inputGroup-sizing-default10"><Strong>Enter Source</Strong></div>
-          </div>
-          <input type="text" formControlName="source" class="form-control" aria-label="Source"
-                 placeholder="" aria-describedby="inputGroup-sizing-default10">
-        </div>
       </div>
-
-
     </div>
     <div class="row justify-content-center">
       <div class="col-1">
@@ -85,7 +51,6 @@
       </div>
     </div>
   </div>
-
 </form>
 
 <div class="row justify-content-center">
