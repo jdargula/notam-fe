@@ -15,9 +15,9 @@
 
 <form [formGroup]="searchForm" (ngSubmit)="submitSearch()">
   <div class="container">
-    <div class="row align-items-sm-center">
+    <div class="row">
       <div class="col">
-        <div class="input-group mb-0">
+        <div class="input-group mb-3">
           <div class="input-group-prepend">
             <div class="input-group-text" id="inputGroup-sizing-default1"><Strong>Enter NOTAM Key</Strong></div>
           </div>
@@ -25,7 +25,7 @@
                  placeholder="" aria-describedby="inputGroup-sizing-default1">
         </div>
 
-        <div class="input-group mb-0">
+        <div class="input-group mb-3">
           <div class="input-group-prepend">
             <div class="input-group-text" id="inputGroup-sizing-default2"><Strong>Enter Airport Code</Strong></div>
           </div>
@@ -33,7 +33,7 @@
                  placeholder="" aria-describedby="inputGroup-sizing-default2">
         </div>
 
-        <div class="input-group mb-0">
+        <div class="input-group mb-3">
           <div class="input-group-prepend">
             <div class="input-group-text" id="inputGroup-sizing-default3"><Strong>Enter Type of NOTAM</Strong></div>
           </div>
@@ -52,6 +52,7 @@
     </div>
   </div>
 </form>
+</div>
 
 <div class="row justify-content-center">
   <div *ngIf="displayMoreDetails">
@@ -87,78 +88,111 @@
           </div>
         </div>
       </div>
+      <table class="table table-striped">
+        <thead>
+        <tr>
+          <th scope="col">Key</th>
+          <th scope="col">Airport</th>
+          <th scope="col">Type</th>
+          <th scope="col">Coordinates</th>
 
-      <div class="row padding-1">
+          <th scope="col">Altitude</th>
+          <th scope="col">Runway</th>
+          <th scope="col">Effective Date</th>
+          <th scope="col">Created</th>
+          <th scope="col">Source</th>
+        </tr>
+        </thead>
+        <tbody >
+        <tr *ngFor="let response of notams">
+          <!-- <th scope="row">{{response.col1}}</th> -->
+          <td (click)="moreDetails(response.col1)" class="link">{{response.col1}}</td>
+          <td>{{response.col2}}</td>
+          <td>{{response.col3}}</td>
+          <td>{{response.col4}}</td>
+          <td>{{response.col5}}</td>
+          <td>{{response.col6}}</td>
+          <td>{{response.col7}}</td>
+          <td>{{response.col8}}</td>
+          <td>{{response.col9}}</td>
+          <td>{{response.col10}}</td>
 
-        <div class="col-1 table-header">
-          Key
-        </div>
-        <div class="col-1 table-header">
-          Airport
-        </div>
-        <div class="col-3 table-header">
-          Type
-        </div>
-        <div class="col-1 table-header">
-          Latitude
-        </div>
-        <div class="col-1 table-header">
-          Longitude
-        </div>
-        <div class="col-1 table-header">
-          Altitude
-        </div>
-        <div class="col-1 table-header">
-          Runway
-        </div>
-        <div class="col-1 table-header">
-          Effective Date
-        </div>
-        <div class="col-1 table-header">
-          Created
-        </div>
-        <div class="col-1 table-header">
-          Source
-        </div>
+        </tr>
 
+        </tbody>
+      </table>
+      <!-- <div class="row padding-1">
+
+            <div class="col-1 table-header">
+              Key
+            </div>
+            <div class="col-1 table-header">
+              Airport
+            </div>
+            <div class="col-3 table-header">
+              Type
+            </div>
+            <div class="col-1 table-header">
+              Latitude
+            </div>
+            <div class="col-1 table-header">
+              Longitude
+            </div>
+            <div class="col-1 table-header">
+              Altitude
+            </div>
+            <div class="col-1 table-header">
+              Runway
+            </div>
+            <div class="col-1 table-header">
+              Effective Date
+            </div>
+            <div class="col-1 table-header">
+              Created
+            </div>
+            <div class="col-1 table-header">
+              Source
+            </div>
+
+          </div>
+
+          <div class="row padded-1" *ngFor="let response of notams">
+            <div (click)="moreDetails(response.col1)" class="col-1 link">
+              {{response.col1}}
+            </div>
+            <div class="col-1">
+              {{response.col2}}
+            </div>
+            <div class="col-3">
+              {{response.col3}}
+            </div>
+            <div class="col-2">
+              {{response.col4}}
+            </div>
+            <div class="col-1">
+              {{response.col5}}
+            </div>
+            <div class="col-1">
+              {{response.col6}}
+            </div>
+            <div class="col-1">
+              {{response.col7}}
+            </div>
+            <div class="col-1">
+              {{response.col8}}
+            </div>
+            <div class="col-1">
+              {{response.col9}}
+            </div>
+            <div class="col-1">
+              {{response.col10}}
+            </div>
+
+          </div>
+
+
+        </div>
+        </div> -->
       </div>
-
-      <div class="row padded-1" *ngFor="let response of notams">
-        <div (click)="moreDetails(response.col1)" class="col-1 link">
-          {{response.col1}}
-        </div>
-        <div class="col-1">
-          {{response.col2}}
-        </div>
-        <div class="col-3">
-          {{response.col3}}
-        </div>
-        <div class="col-2">
-          {{response.col4}}
-        </div>
-        <div class="col-1">
-          {{response.col5}}
-        </div>
-        <div class="col-1">
-          {{response.col6}}
-        </div>
-        <div class="col-1">
-          {{response.col7}}
-        </div>
-        <div class="col-1">
-          {{response.col8}}
-        </div>
-        <div class="col-1">
-          {{response.col9}}
-        </div>
-        <div class="col-1">
-          {{response.col10}}
-        </div>
-
-      </div>
-
-
     </div>
-  </div>
-</div>
-</div>
+    </div>

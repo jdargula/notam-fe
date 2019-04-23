@@ -48,6 +48,8 @@ export class AgmMapComponent implements OnInit {
   private mapTypeId: MapTypeId;
   private mapOptions: MapOptions;
   private airportAndType: Array<any> = [];
+  private notamKeyArrayOnInit: Array<any> = [];
+  private key: any;
 
   constructor(private API_Loader: MapsAPILoader,
               private zone: NgZone,
@@ -84,37 +86,32 @@ export class AgmMapComponent implements OnInit {
       const notamKeyOnInit = [];
       const airportCodesOnInit = [];
       const typeOfNotamOnInit = [];
+      let initNotamKey = '';
       let initAirportCode = '';
       let initNotamType = '';
-      console.log(this.searchForm.notams);
-      /**
-       * ***Note: The fact that the frontend client makes the request by http to post all of the data
-       * for rendering at runtime, storing the data locally in multiple arrays, would not be considered
-       * good practice in data-intensive cases. In an implementation mindful of a user's resources for
-       * storage, old notam data would likely be stored in some separate archival backend that makes
-       * only a fraction of the calls to our app's backend compared to requests made by the frontend).
-       * With this current implementation, the user's device would be responsible for caching
-       * the data and then the app could be set to purge the data when the user log's off,
-       * or refreshes the cache when submitting a query for updated NOTAM data.
-       */
+      /* console.log(this.searchForm.notams); */ // test
       this.notams.forEach(function (notam) {
-        notamKeyOnInit.push(notam.col1);
+        initNotamKey = notam.col1;
+        notamKeyOnInit.push(initNotamKey);
         initAirportCode = notam.col2;
         airportCodesOnInit.push(initAirportCode);
         initNotamType = notam.col3;
         console.log('initNotamType = ' + initNotamType);
         typeOfNotamOnInit.push(initNotamType);
       });
+      this.notamKeyArrayOnInit = notamKeyOnInit;
+      /* console.log(this.notamKeyArrayOnInit); */ // testing
       this.airportCodesArrayOnInit = airportCodesOnInit;
-      console.log(this.airportCodesArrayOnInit);
+      /* console.log(this.airportCodesArrayOnInit); */ // testing
       this.typeOfNotamArrayOnInit = typeOfNotamOnInit;
-      console.log(this.typeOfNotamArrayOnInit);
+      /* console.log(this.typeOfNotamArrayOnInit); */ // testing
       while (this.airportCodesArrayOnInit.length > 0) {
         this.airportCode = this.airportCodesArrayOnInit.pop();
         if (this.airportCode === '!FDC') {
           this.airportCode = '!IAD';
         }
         this.type = this.typeOfNotamArrayOnInit.pop();
+        this.key = this.notamKeyArrayOnInit.pop();
         this.icaoConversion = 'K'
           + this.airportCode[1]
           + this.airportCode[2]
@@ -123,9 +120,9 @@ export class AgmMapComponent implements OnInit {
         this.coordsArray_lat = this.coordsArray[0];
         this.coordsArray_lng = this.coordsArray[1];
         this.airportCoords = {lat: this.coordsArray_lat, lng: this.coordsArray_lng};
-        console.log(this.airportCoords);
+        /* console.log(this.airportCoords); */ //testing
         this.m = JSON.parse(JSON.stringify(this.airportCoords));
-        console.log(this.m);
+        /* console.log(this.m); */ // testing
         this.latitude = parseFloat(this.m.lat);
         this.longitude = parseFloat(this.m.lng);
         this.latitude_infoWindow = Math.round(parseFloat(this.m.lat) * 10000) / 10000;
@@ -135,7 +132,8 @@ export class AgmMapComponent implements OnInit {
           lng: this.longitude
         });
         this.maxWidth = 500;
-        this.contentString = '[Type]: ' + this.type + '\n'
+        this.contentString = '[Key]: ' + this.key + '\n'
+          + '[Type]: ' + this.type + '\n'
           + '[IATA/ICAO]: ' + this.airportCode + '/' + this.icaoConversion + '\n'
           + '[Coordinates]: ' + this.latitude_infoWindow + ', ' + this.longitude_infoWindow;
         this.infoWindow = new google.maps.InfoWindow({
@@ -170,10 +168,10 @@ export class AgmMapComponent implements OnInit {
       this.infoWindowArray = infoWindowArray;
       const infoWindow = new google.maps.InfoWindow();
       while (this.airportLatLngArray.length > 0) {
-        console.log('this.airportLatLngArray: ' + this.airportLatLngArray);
+        /* console.log('this.airportLatLngArray: ' + this.airportLatLngArray); */ // testing
         this.airportLatLng = this.airportLatLngArray.pop();
-        console.log('this.airportLatLng = ' + this.airportLatLng);
-        console.log('this.airportLatLngArray = ' + this.airportLatLngArray);
+        /* console.log('this.airportLatLng = ' + this.airportLatLng);
+        console.log('this.airportLatLngArray = ' + this.airportLatLngArray); */ // testing
         this.infoWindow = this.infoWindowArray.pop();
         this.marker = new google.maps.Marker({
           map: this.map,
@@ -190,7 +188,7 @@ export class AgmMapComponent implements OnInit {
           }
         )(this.marker, this.infoWindow.getContent(), infoWindow));
         this.markers.push(this.marker);
-        console.log(this.markers);
+        /* console.log(this.markers); */ // testing
         const bounds = new google.maps.LatLngBounds();
         bounds.extend(this.airportLatLng);
         this.map.setCenter(bounds.getCenter());
@@ -254,7 +252,7 @@ export class AgmMapComponent implements OnInit {
           console.log('res');
           console.log(JSON.stringify(res));
           this.notams = res;
-          console.log(this.notams);
+          /* console.log(this.notams); */ // testing
           this.displayNotams(this.notams);
         }, err => {
           console.error(err);
