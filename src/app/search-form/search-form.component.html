@@ -13,47 +13,6 @@
   </div>
 </div>
 
-<form [formGroup]="searchForm" (ngSubmit)="submitSearch()">
-  <div class="container">
-    <div class="row">
-      <div class="col">
-        <div class="input-group mb-3">
-          <div class="input-group-prepend">
-            <div class="input-group-text" id="inputGroup-sizing-default1"><Strong>Enter NOTAM Key</Strong></div>
-          </div>
-          <input type="text" formControlName="key" class="form-control" aria-label="Key"
-                 placeholder="" aria-describedby="inputGroup-sizing-default1">
-        </div>
-
-        <div class="input-group mb-3">
-          <div class="input-group-prepend">
-            <div class="input-group-text" id="inputGroup-sizing-default2"><Strong>Enter Airport Code</Strong></div>
-          </div>
-          <input type="text" formControlName="airport" class="form-control" aria-label="Airport"
-                 placeholder="" aria-describedby="inputGroup-sizing-default2">
-        </div>
-
-        <div class="input-group mb-3">
-          <div class="input-group-prepend">
-            <div class="input-group-text" id="inputGroup-sizing-default3"><Strong>Enter Type of NOTAM</Strong></div>
-          </div>
-          <input type="text" formControlName="type" class="form-control" aria-label="Type"
-                 placeholder="" aria-describedby="inputGroup-sizing-default3">
-        </div>
-      </div>
-    </div>
-    <div class="row justify-content-center">
-      <div class="col-1">
-        <div id="nav">
-        </div>
-        <div id="aside" style="padding:5px">
-        </div>
-      </div>
-    </div>
-  </div>
-</form>
-</div>
-
 <div class="row justify-content-center">
   <div *ngIf="displayMoreDetails">
     <div class="container">
@@ -74,7 +33,6 @@
         </div>
       </div>
     </div>
-
   </div>
 </div>
 

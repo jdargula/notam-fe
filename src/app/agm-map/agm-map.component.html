@@ -28,34 +28,61 @@
   </div>
 </div>
 
-  <form [formGroup]="searchForm.searchForm" (ngSubmit)="setAirportCoordinates()">
+<form [formGroup]="searchForm.searchForm" (ngSubmit)="setAirportCoordinates(); searchForm.submitSearch()">
 
+
+  <div class="row justify-content-center">
     <div class="container">
-      <div class="row justify-content-center">
-          <div id ="nav">
-            <button
-              (click)="searchByKey(); searchForm.submitSearchByKey()">
-              Search by Key
-            </button>
-
+      <div class="input-group mb-3">
+        <div class="input-group-prepend">
+          <button
+            (click)="searchByKey(); searchForm.submitSearchByKey()">
+            <Strong>Search by NOTAM Key</Strong>
+          </button>
         </div>
-        <div id ="nav2">
+        <input type="text" formControlName="key" class="form-control" aria-label="Key"
+               placeholder="" aria-describedby="inputGroup-sizing-default1">
+      </div>
+    </div>
+  </div>
+
+
+  <div class="row justify-content-center">
+    <div class="container">
+      <div class="input-group mb-3">
+        <div class="input-group-prepend">
           <button
             (click)="setAirportCoordinates(); searchForm.submitSearch()">
-            Search by Airport
+            <Strong>Search by Airport Code</Strong>
           </button>
-
         </div>
-        <div id ="nav4">
+        <input type="text" formControlName="airport" class="form-control" aria-label="Airport"
+               placeholder="" aria-describedby="inputGroup-sizing-default2">
+      </div>
+    </div>
+  </div>
+
+  <div class="row justify-content-center">
+    <div class="container">
+      <div class="input-group mb-3">
+        <div class="input-group-prepend">
           <button
             (click)="searchByType(); searchForm.submitSearchByType()">
-            Search by Type
+            <Strong>Search by Type of NOTAM</Strong>
           </button>
-
         </div>
-
+        <input type="text" formControlName="type" class="form-control" aria-label="Type"
+               placeholder="" aria-describedby="inputGroup-sizing-default3">
       </div>
-
     </div>
-  </form>
+  </div>
 
+  <div class="row justify-content-center">
+    <div class="col-1">
+      <div id="nav5">
+      </div>
+      <div id="aside" style="padding:5px">
+      </div>
+    </div>
+  </div>
+</form>
